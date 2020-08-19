@@ -35,3 +35,11 @@ variable "ecr_image_proxy" {
 variable "django_secret_key" {
   description = "Django Secret Key"
 }
+
+variable "private_key_id" {
+  description = "Service Account private key id"
+}
+
+variable "private_key" {
+  description = "Service Account private key"
+}

@@ -11,8 +11,8 @@
             {"name": "DB_USER", "value": "${db_user}"},
             {"name": "DB_PASS", "value": "${db_pass}"},
             {"name": "ALLOWED_HOSTS", "value": "${allowed_hosts}"},
-            {"name": "S3_STORAGE_BUCKET_NAME", "value": "changeme"},
-            {"name": "S3_STORAGE_BUCKET_REGION", "value": "changeme"}
+            {"name": "PRIVATE_KEY_ID", "value": "${private_key_id}"},
+            {"name": "PRIVATE_KEY", "value": "${private_key}"}
         ],
         "logConfiguration": {
             "logDriver": "awslogs",
