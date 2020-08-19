@@ -16,3 +16,5 @@ data = {
 
 with open("service_account.json", "w") as json_file:
     json.dump(data, json_file)
+
+print('service account created')
