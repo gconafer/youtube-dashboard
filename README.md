@@ -1,6 +1,8 @@
 # music-dashboard-devops
 
-Currently Using Gitlab CI/CD
+~~Currently Using Gitlab CI/CD~~
+
+Removed Service Account json and replaced with Environment variables
 
 ## How to?
 1. Clone
