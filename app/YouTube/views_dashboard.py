@@ -56,7 +56,7 @@ def dashboard(request, ym):
   profit_labels = cache.get(f'{ym}_profit_labels')
   profit_values = cache.get(f'{ym}_profit_values')
   if profit_labels == None or profit_values == None:
-    clients = Client.objects.all()
+    clients = Client.objects.filter(~Q(client_name='프로모션채널'))
     profit = {}
     for client in clients:
       profit[client.client_name] = 0
