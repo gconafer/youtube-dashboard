@@ -1,0 +1,17 @@
+asgiref==3.2.10
+Django==3.0.9
+django-crispy-forms==1.9.2
+django-mathfilters==1.0.0
+plotly==4.9.0
+psycopg2-binary>=2.7.5,<2.8.0
+pytz==2020.1
+retrying==1.3.3
+six==1.15.0
+sqlparse==0.3.1
+uwsgi>=2.0.18,<2.1.0
+oauth2client==4.1.3
+pygsheets==2.0.3.1
+django-select2==7.4.2
+django-redis==4.12.1
+gspread==3.6.0
+pandas

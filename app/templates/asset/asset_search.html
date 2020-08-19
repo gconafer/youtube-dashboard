@@ -1,0 +1,327 @@
+{% extends 'includes/base.html' %}
+{% load static %}
+
+{% block pagescript %}
+  <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="container-fluid" style="width:100%">
+    <div class="row">
+      <div class="col-auto">
+        <h1 class="mt-4">Asset Search</h1>
+      </div>
+    </div>
+
+
+    <form action="" method="GET">
+      <div class="form-row">
+        <div class="form-group col-md-3">
+          <label for="inputEmail4">Asset ID</label>
+          <input type="text" class="form-control" id="inputEmail4" placeholder="Asset ID" name="asset_id"
+                 value="{{ values.asset_id }}">
+        </div>
+        <div class="form-group col-md-3">
+          <label for="inputEmail4">Asset Title</label>
+          <input type="text" class="form-control" id="inputEmail4" placeholder="Asset Title" name="asset_title"
+                 value="{{ values.asset_title }}">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="inputAddress">Asset Channel ID</label>
+          <input type="text" class="form-control" id="inputAddress" placeholder="UC....." name="asset_channel_id"
+                 value="{{ values.asset_channel_id }}">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="inputCity">Asset Label</label>
+          <input type="text" class="form-control" id="inputCity" name="asset_labels" value="{{ values.asset_labels }}">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="inputState">Language Filter</label>
+          <select class="form-control" id="exampleFormControlSelect2" name="lang">
+            <option {% if values.lang == 'None' %} selected{% endif %}>None</option>
+            <option {% if values.lang == 'Korean' %} selected{% endif %}>Korean</option>
+            <option {% if values.lang == 'Japanese' %} selected{% endif %}>Japanese</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-2">
+          <label>Artist</label>
+          <input type="text" class="form-control" name="artist" value="{{ values.artist }}">
+        </div>
+        <div class="form-group col-md-2">
+          <label>Album</label>
+          <input type="text" class="form-control" name="album" value="{{ values.album }}">
+        </div>
+        <div class="form-group col-md-2">
+          <label>Label</label>
+          <input type="text" class="form-control" name="label" value="{{ values.label }}">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="exampleFormControlSelect2">Office</label>
+          <select class="form-control" id="exampleFormControlSelect2" name="office">
+            <option {% if values.office == 'All' %} selected{% endif %} value="All">All</option>
+            <option {% if values.office == 'KR' %} selected{% endif %} value="KR">Korea</option>
+            <option {% if values.office == 'JP' %} selected{% endif %} value="JP">Japan</option>
+            <option {% if values.office == 'ID' %} selected{% endif %} value="ID">Indonesia</option>
+            <option {% if values.office == 'PH' %} selected{% endif %} value="PH">Philippines</option>
+            <option {% if values.office == 'CN' %} selected{% endif %} value="CN">China</option>
+            <option {% if values.office == 'UN' %} selected{% endif %} value="UN">Unknown</option>
+            <option {% if values.office == 'UD' %} selected{% endif %} value="UD">Undesignated</option>
+            <option {% if values.office == 'None' %} selected{% endif %}>None</option>
+          </select>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="exampleFormControlSelect2">Asset Group Assigned</label>
+          <select class="form-control" id="exampleFormControlSelect2" name="asset_group_assigned">
+            <option {% if values.asset_group_assigned == 'All' %} selected{% endif %}>All</option>
+            <option {% if values.asset_group_assigned == 'Yes' %} selected{% endif %}>Yes</option>
+            <option {% if values.asset_group_assigned == 'No' %} selected{% endif %}>No</option>
+          </select>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="exampleFormControlSelect2">Missing Asset Channel ID</label>
+          <select class="form-control" id="exampleFormControlSelect2" name="inactive">
+            <option {% if values.inactive == 'All' %} selected{% endif %}>All</option>
+            <option {% if values.inactive == 'Missing' %} selected{% endif %}>Missing</option>
+            <option {% if values.inactive == 'Not Missing' %} selected{% endif %}>Not Missing</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-2">
+          <label for="inputState">Custom ID</label>
+          <input type="text" class="form-control" id="inputZip" name="custom_id" value="{{ values.custom_id }}">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="inputCity">ISRC</label>
+          <input type="text" class="form-control" id="inputCity" name="isrc" value="{{ values.isrc }}">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="inputState">UPC</label>
+          <input type="text" class="form-control" id="inputZip" name="upc" value="{{ values.upc }}">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="inputZip">GRID</label>
+          <input type="text" class="form-control" id="inputZip" name="grid" value="{{ values.grid }}">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="exampleFormControlSelect2">Asset Type</label>
+          <select class="form-control" id="exampleFormControlSelect2" name="asset_type">
+            <option {% if values.asset_type == 'All' %} selected{% endif %}>All</option>
+            <option {% if values.asset_type == 'Web/Music Video/TV' %} selected{% endif %}>Web/Music Video/TV</option>
+            <option {% if values.asset_type == 'Sound Recording' %} selected{% endif %}>Sound Recording</option>
+            <option {% if values.asset_type == 'Art Track' %} selected{% endif %}>Art Track</option>
+          </select>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="exampleFormControlSelect2">Per View</label>
+          <select class="form-control" id="exampleFormControlSelect2" name="per_view">
+            {#            <option {% if values.per_view == '25' %} selected{% endif %}>25</option>#}
+            {#            <option {% if values.per_view == '50' %} selected{% endif %}>50</option>#}
+            {#            <option {% if values.per_view == '100' %} selected{% endif %}>100</option>#}
+            <option {% if values.per_view == '500' %} selected{% endif %}>500</option>
+            <option {% if values.per_view == '2000' %} selected{% endif %}>2000</option>
+            <option {% if values.per_view == '200' %} selected{% endif %}>200</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    <hr>
+    <div class="card mb-4">
+      <div class="card-header"><i class="fas fa-table mr-1"></i>Search Result</div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <form action="" method="POST">
+            <table id="example" class="table table-bordered table-sm" style="width:100%">
+              <thead>
+              <tr>
+                <th class="active"><input type="checkbox" class="select-all checkbox"
+                                          name="select-all"/></th>
+                <th class="success">Asset ID</th>
+                <th class="success">Asset Title</th>
+                <th class="success">Asset Label</th>
+                <th class="success">Asset Type</th>
+                <th class="success">Artist</th>
+                <th class="success">Label</th>
+                <th class="success">Office</th>
+                <th class="success">Asset Group</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for asset in assets %}
+                <tr>
+                  <td class="active">
+                    <input type="checkbox" class="select-item checkbox" name="asset_id"
+                           value="{{ asset.asset_id }}"/>
+                  </td>
+
+                  <td class="success" style="cursor:pointer;"
+                      onClick=" location.href='{% url 'asset_update' asset_id=asset.asset_id %}' ">{{ asset.asset_id }}</td>
+                  <td class="success">{{ asset.asset_title }}</td>
+                  <td class="success">{{ asset.asset_labels }}</td>
+                  <td class="success">{{ asset.asset_type }}</td>
+                  <td class="success">{{ asset.artist }}</td>
+                  <td class="success">{{ asset.label }}</td>
+                  <td class="success">{{ asset.office }}</td>
+                  <td class="success">{{ asset.asset_group }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            <hr>
+            <p>
+            <div class="row">
+              <div class="col-auto">
+                {% if assets.has_previous %}
+                  <a href="?page=1&asset_id={{ values.asset_id }}&asset_title={{ values.asset_title }}&asset_channel_id={{ values.asset_channel_id }}&asset_labels={{ values.asset_labels }}&artist={{ values.artist }}&album={{ values.album }}&label={{ values.label }}&office={{ values.office }}&asset_group_assigned={{ values.asset_group_assigned }}&inactive={{ values.inactive }}&custom_id={{ values.custom_id }}&isrc={{ values.isrc }}&upc={{ values.upc }}&grid={{ values.grid }}&asset_type={{ values.asset_type }}&per_view={{ values.per_view }}"><i
+                      class="fas fa-angle-double-left"></i></a>
+                  <a href="?page={{ assets.previous_page_number }}&asset_id={{ values.asset_id }}&asset_title={{ values.asset_title }}&asset_channel_id={{ values.asset_channel_id }}&asset_labels={{ values.asset_labels }}&artist={{ values.artist }}&album={{ values.album }}&label={{ values.label }}&office={{ values.office }}&asset_group_assigned={{ values.asset_group_assigned }}&inactive={{ values.inactive }}&custom_id={{ values.custom_id }}&isrc={{ values.isrc }}&upc={{ values.upc }}&grid={{ values.grid }}&asset_type={{ values.asset_type }}&per_view={{ values.per_view }}"><i
+                      class="fas fa-angle-left"></i></a>
+                {% endif %}
+                <span>{{ assets.number }}</span>
+                <span>/</span>
+                <span>{{ assets.paginator.num_pages }}</span>
+                {% if assets.has_next %}
+                  <a href="?page={{ assets.next_page_number }}&asset_id={{ values.asset_id }}&asset_title={{ values.asset_title }}&asset_channel_id={{ values.asset_channel_id }}&asset_labels={{ values.asset_labels }}&artist={{ values.artist }}&album={{ values.album }}&label={{ values.label }}&office={{ values.office }}&asset_group_assigned={{ values.asset_group_assigned }}&inactive={{ values.inactive }}&custom_id={{ values.custom_id }}&isrc={{ values.isrc }}&upc={{ values.upc }}&grid={{ values.grid }}&asset_type={{ values.asset_type }}&per_view={{ values.per_view }}"><i
+                      class="fas fa-angle-right"></i></a>
+                  <a href="?page={{ assets.paginator.num_pages }}&asset_id={{ values.asset_id }}&asset_title={{ values.asset_title }}&asset_channel_id={{ values.asset_channel_id }}&asset_labels={{ values.asset_labels }}&artist={{ values.artist }}&album={{ values.album }}&label={{ values.label }}&office={{ values.office }}&asset_group_assigned={{ values.asset_group_assigned }}&inactive={{ values.inactive }}&custom_id={{ values.custom_id }}&isrc={{ values.isrc }}&upc={{ values.upc }}&grid={{ values.grid }}&asset_type={{ values.asset_type }}&per_view={{ values.per_view }}"><i
+                      class="fas fa-angle-double-right"></i></a>
+                {% endif %}
+              </div>
+              {% if mode == 'office' %}
+                <div class="col-auto">
+                  <select class="form-control" name="office">
+                    <option value="KR">Korea</option>
+                    <option value="JP">Japan</option>
+                    <option value="ID">Indonesia</option>
+                    <option value="PH">Philippines</option>
+                    <option value="CN">China</option>
+                    <option value="UN">Unknown</option>
+                    <option value="UD">Undesignated</option>
+                  </select>
+                </div>
+              {% endif %}
+              {% if mode == 'asset_group' %}
+                <div class="col-auto">
+                  <select class="form-control" name="asset_group">
+                    <option value="{{ asset_group.id }}">{{ asset_group }}</option>
+                  </select>
+                </div>
+              {% endif %}
+              <div class="col-auto">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                  Submit
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Update</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        Proceed on updating Asset Information
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {#                <button class="btn btn-primary mb-2">Submit</button>#}
+              </div>
+            </div>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+{% endblock %}
+
+
+{% block bottomscript %}
+  <script>
+      $(function () {
+
+          //button select all or cancel
+          $("#select-all").click(function () {
+              var all = $("input.select-all")[0];
+              all.checked = !all.checked
+              var checked = all.checked;
+              $("input.select-item").each(function (index, item) {
+                  item.checked = checked;
+              });
+          });
+
+          //button select invert
+          $("#select-invert").click(function () {
+              $("input.select-item").each(function (index, item) {
+                  item.checked = !item.checked;
+              });
+              checkSelected();
+          });
+
+          //button get selected info
+          $("#selected").click(function () {
+              var items = [];
+              $("input.select-item:checked:checked").each(function (index, item) {
+                  items[index] = item.value;
+              });
+              if (items.length < 1) {
+                  alert("no selected items!!!");
+              } else {
+                  var values = items.join(',');
+                  console.log(values);
+                  var html = $("<div></div>");
+                  html.html("selected:" + values);
+                  html.appendTo("body");
+              }
+          });
+
+          //column checkbox select all or cancel
+          $("input.select-all").click(function () {
+              var checked = this.checked;
+              $("input.select-item").each(function (index, item) {
+                  item.checked = checked;
+              });
+          });
+
+          //check selected items
+          $("input.select-item").click(function () {
+              var checked = this.checked;
+              console.log(checked);
+              checkSelected();
+          });
+
+          //check is all selected
+          function checkSelected() {
+              var all = $("input.select-all")[0];
+              var total = $("input.select-item").length;
+              var len = $("input.select-item:checked:checked").length;
+              console.log("total:" + total);
+              console.log("len:" + len);
+              all.checked = len === total;
+          }
+      });
+  </script>
+
+{% endblock %}
+
+

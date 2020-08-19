@@ -1,0 +1,84 @@
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+  <a class="navbar-brand" href="{% url 'home' %}">CollabAsia</a>
+  <ul class="navbar-nav ml-auto ml-md-0">
+    <li class="nav-item dropdown {% if request.resolver_match.url_name == "home" %}active{% endif %}">
+      <a class="nav-link" id="userDropdown" href="{% url 'home' %}"><i class="fas fa-home fa-fw"></i> Home</a>
+    </li>
+  </ul>
+  <ul class="navbar-nav ml-auto ml-md-0">
+    <li class="nav-item dropdown {% if request.resolver_match.url_name == "client" %}active{% endif %}">
+      <a class="nav-link" id="userDropdown" href="{% url 'client' %}"><i class="fas fa-users fa-fw"></i> Client</a>
+    </li>
+  </ul>
+  <ul class="navbar-nav ml-auto ml-md-0">
+    <li class="nav-item dropdown {% if request.resolver_match.url_name == "asset" %}active{% endif %}">
+      <a class="nav-link" id="userDropdown" href="{% url 'asset' mode='office' asset_group_id='all' %}"><i
+          class="fa fa-film fa-fw" aria-hidden="true"></i> Assets</a>
+    </li>
+  </ul>
+  <ul class="navbar-nav ml-auto ml-md-0">
+    <li class="nav-item dropdown {% if request.resolver_match.url_name == "promotion" %}active{% endif %}">
+      <a class="nav-link" id="userDropdown" href="{% url 'promotion' %}"><i
+          class="fas fa-gift fa-fw" aria-hidden="true"></i> Promotion</a>
+    </li>
+  </ul>
+  {% if request.user.is_staff %}
+    <ul class="navbar-nav ml-auto ml-md-0">
+      <li class="nav-item dropdown {% if request.resolver_match.url_name == "dashboard" %}active{% endif %}">
+        <a class="nav-link" id="userDropdown" href="{% url 'dashboard' ym='2020-07' %}"><i
+            class="fas fa-chart-line fa-fw" aria-hidden="true"></i> Dashboard</a>
+      </li>
+    </ul>
+  {% endif %}
+  <!-- Navbar Search-->
+  <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+  </form>
+  <!-- Navbar-->
+  <ul class="navbar-nav ml-auto ml-md-0">
+    <li class="nav-item dropdown {% if request.resolver_match.url_name == "add_asset" %}active{% endif %}">
+      <a class="nav-link" id="userDropdown" href="{% url 'add_asset' %}"><i
+          class="fas fa-folder-plus fa-fw" aria-hidden="true"></i> Add Asset</a>
+    </li>
+  </ul>
+
+  {% if request.user.is_staff %}
+    <ul class="navbar-nav ml-auto ml-md-0">
+      <li class="nav-item dropdown {% if request.resolver_match.url_name == "add_client" %}active{% endif %}">
+        <a class="nav-link" id="userDropdown" href="{% url 'add_client' %}"><i
+            class="fas fa-user-plus fa-fw" aria-hidden="true"></i> Add Client</a>
+      </li>
+    </ul>
+  {% endif %}
+  {% if request.user.is_staff %}
+    <ul class="navbar-nav ml-auto ml-md-0">
+      <li class="nav-item dropdown {% if request.resolver_match.url_name == "add_manager" %}active{% endif %}">
+        <a class="nav-link" id="userDropdown" href="{% url 'add_manager' %}"><i
+            class="fas fa-user-plus fa-fw" aria-hidden="true"></i> Add Manager</a>
+      </li>
+    </ul>
+  {% endif %}
+
+
+  <ul class="navbar-nav ml-auto ml-md-0">
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown"
+         aria-haspopup="true" aria-expanded="false">
+
+        {% if user.get_username %}
+          <div class="small">Logged in as:</div>
+          {{ user.get_username }}
+        {% endif %}
+
+        <i class="fas fa-user fa-fw"></i></a>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+        {% if request.user.is_superuser %}
+          <a class="dropdown-item" href="#">Update Assets</a>
+        {% endif %}
+        <a class="dropdown-item" href="#">Profile</a>
+        <a class="dropdown-item" href="#">Activity Log</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+      </div>
+    </li>
+  </ul>
+</nav>

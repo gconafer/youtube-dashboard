@@ -1,0 +1,50 @@
+{% extends 'includes/base.html' %}
+{% load static %}
+{% block pagescript %}
+  <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet"
+        crossorigin="anonymous"/>
+{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+    <h1 class="mt-4">Clients</h1>
+    <ol class="breadcrumb mb-4">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+      <li class="breadcrumb-item active">Clients</li>
+    </ol>
+    <div class="card mb-4">
+      <div class="card-header"><i class="fas fa-table mr-1"></i>Client List</div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+            <tr>
+              <th>Client Username</th>
+              <th>Client Email</th>
+              <th>Manager</th>
+              <th>Office</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for c in clients %}
+              <tr style="cursor:pointer;" onClick=" location.href='{% url 'client_info' client_id=c.id %}' ">
+                <td>{{ c.client_name }}</td>
+                <td>{{ c.email }}</td>
+                <td>{% for m in c.manager.all %}{{ m.user.username }}{% if not forloop.last %},
+                {% endif %}{% endfor %}</td>
+                <td>{{ c.office }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block bottomscript %}
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+  <script src="{% static 'assets/demo/datatables-demo.js' %}"></script>
+{% endblock %}

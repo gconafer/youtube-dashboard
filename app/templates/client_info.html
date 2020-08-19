@@ -1,0 +1,162 @@
+{% extends 'includes/base.html' %}
+{% block content %}
+  <div class="container-fluid">
+    <h1 class="mt-4">{{ client }}</h1>
+    <ol class="breadcrumb mb-4">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'client' %}">Clients</a></li>
+      <li class="breadcrumb-item active">{{ client }}</li>
+    </ol>
+    <div class="card mb-4 mx-auto" style="width:100%">
+      <div class="card-header">
+        <i class="fab fa-youtube fa-fw"></i>
+        Channels & <i class="fa fa-folder fa-fw" aria-hidden="true"></i>Asset Groups
+      </div>
+      <div class="card-body collapse out show" id="collapseChaannels">
+        <div class="row">
+          <div class="col-6">
+            <div class="table-responsive">
+              <table id="example" class="table table-bordered table-hover" style="width:100%">
+                <thead>
+                <tr>
+                  <th class="success" colspan="2">Channel Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  {% for channel in channels %}
+                    <td class="success">{{ channel.channel_name }} ({{ channel.channel_id }})</td>
+                    {% if forloop.counter|divisibleby:"2" %}</tr>
+                      <tr>{% else %}{% endif %}
+                  {% endfor %}
+                  </tr>
+                </tbody>
+              </table>
+              <a href="{% url 'add_channel' client_id=client.id %}" class="btn btn-primary btn-lg active"
+                 role="button" aria-pressed="true">Add Channel</a>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="table-responsive">
+              <table id="example" class="table table-bordered table-hover" style="width:100%">
+                <thead>
+                <tr>
+                  <th class="success">Asset Group</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for asset_group in asset_groups %}
+                  <tr style="cursor:pointer;"
+                      onClick=" location.href='{% url 'asset_group_asset_list' asset_group_id=asset_group.id %}' ">
+                    <td class="success">{{ asset_group.group_name }}</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              <a href="{% url 'add_asset_group' client_id=client.id %}" class="btn btn-primary btn-lg active"
+                 role="button" aria-pressed="true">Add Asset Group</a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+    <div class="card mb-4 mx-auto" style="width:100%">
+      <div class="card-header"><i class="fas fa-file-invoice-dollar fa-fw"></i>Payment History</div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table id="example" class="table table-bordered table-hover" style="width:100%">
+            <thead>
+            <tr>
+              <th style="width: 30%" class="success">Date</th>
+              <th class="success">Revenue Summary</th>
+            </tr>
+            </thead>
+            <tbody>
+            {#            <tr>#}
+            <tr style="cursor:pointer;"
+                onClick=" location.href='{% url 'payment_history' client_id=client.id year_month='2020-07' %}'">
+              <td class="success">2020-07</td>
+              <td class="success">$7,777.77</td>
+            </tr>
+            <tr style="cursor:pointer;"
+                onClick=" location.href='{% url 'payment_history' client_id=client.id year_month='2020-06' %}'">
+              <td class="success">2020-06</td>
+              <td class="success">$3,333.33</td>
+            </tr>
+            {#							{% endfor %}#}
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card mb-4 mx-auto" style="width:100%">
+      <a data-toggle="collapse" href="#collapseSplit" role="button" aria-expanded="false">
+        <div class="card-header">
+          <i class="fas fa-percentage fa-fw"></i>
+          Split
+        </div>
+      </a>
+      <div class="card-body collapse out" id="collapseSplit">
+        <div class="table-responsive">
+          <table id="example" class="table table-bordered table-hover" style="width:100%">
+            <tbody>
+            <tr>
+              <td class="success"><b>Channel Split</b></td>
+              <td class="success">{{ client.channel_split }}</td>
+              <td class="success"><b>Art Track Split</b></td>
+              <td class="success">{{ client.at_split }}</td>
+            </tr>
+            <tr>
+              <td class="success"><b>Sound Recording Split</b></td>
+              <td class="success">{{ client.sr_split }}</td>
+              <td class="success"><b>Manual Claim Split</b></td>
+              <td class="success">{{ client.mc_split }}</td>
+            </tr>
+            </tbody>
+          </table>
+          <a href="{% url 'add_channel' client_id=client.id %}" class="btn btn-primary btn-lg active"
+             role="button" aria-pressed="true">Edit</a>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-4 mx-auto" style="width:100%">
+      <a data-toggle="collapse" href="#collapseManagers" role="button" aria-expanded="false">
+        <div class="card-header">
+          <i class="fas fa-user-astronaut fa-fw"></i>
+          Managers
+        </div>
+      </a>
+      <div class="card-body collapse out" id="collapseManagers">
+        <div class="table-responsive">
+          <table id="example" class="table table-bordered table-hover" style="width:100%">
+            <thead>
+            <tr>
+              <th style="width: 30%" class="success">Manager Email</th>
+              <th class="success">Manager Username</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for manager in managers %}
+              <tr>
+                <td class="success">{{ manager.user.email }}</td>
+                <td class="success">{{ manager.user.username }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          <a href="{% url 'add_channel' client_id=client.id %}" class="btn btn-primary btn-lg active"
+             role="button" aria-pressed="true">Add Manager</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+{% endblock %}
+{% block bottomscript %}
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+{% endblock %}

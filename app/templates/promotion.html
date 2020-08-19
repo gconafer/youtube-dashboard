@@ -1,0 +1,61 @@
+{% extends 'includes/base.html' %}
+{% load static %}
+{% block pagescript %}
+  <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet"
+        crossorigin="anonymous"/>
+{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-auto">
+        <h1 class="mt-4">Promotion Videos</h1>
+      </div>
+      <div class="col-auto">
+        <a href="{% url 'add_promotion' %}"
+           class="btn btn-primary btn-lg active mt-4"
+           role="button" aria-pressed="true">Add Promotion Video</a>
+      </div>
+    </div>
+
+    <ol class="breadcrumb mb-4">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+      <li class="breadcrumb-item active">Promotion</li>
+    </ol>
+    <div class="card mb-4">
+      <div class="card-header"><i class="fas fa-table mr-1"></i>Promotion Video List</div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+            <tr>
+              <th>Asset ID</th>
+              <th>Asset Title</th>
+              <th>Video ID</th>
+              <th>Included Assets</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for promotion in promotions %}
+              <tr>
+                <td style="cursor:pointer;"
+                    onClick=" location.href='{% url 'promo_update' asset_id=promotion.asset_id %}' ">{{ promotion.asset_id }}</td>
+                <td>{{ promotion.asset.asset_title }}</td>
+                <td>{{ promotion.video_id }}</td>
+                <td>{% for include_asset in promotion.included_asset.all %}<a href="{% url 'asset_update' asset_id=include_asset.asset_id %}">{{ include_asset.asset_title }}</a>{% if not forloop.last %},
+                {% endif %}{% endfor %}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block bottomscript %}
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+  <script src="{% static 'assets/demo/datatables-demo.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'includes/base.html' %}
+{% load humanize %}
+{% block pagescript %}
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-auto">
+        <h1 class="mt-4">Dashboard</h1>
+      </div>
+      <div class="col-auto">
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Year Month</label>
+          <select class="form-control" id="exampleFormControlSelect1" onchange="javascript:location.href = this.value;">
+            <option value="{% url 'dashboard' ym='2020-07' %}"
+                    {% if request.resolver_match.url_name == "dashboard" and request.resolver_match.kwargs.ym == "2020-07" %}selected{% endif %}>
+              2020-07
+            </option>
+            <option value="{% url 'dashboard' ym='2020-06' %}"
+                    {% if request.resolver_match.url_name == "dashboard" and request.resolver_match.kwargs.ym == "2020-06" %}selected{% endif %}>
+              2020-06
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item active">Charts</li>
+  </ol>
+  <div class="card mb-4">
+    <div class="card-body">
+      Chart.js is a third party plugin that is used to generate the charts in this template. The charts below have
+      been customized - for further customization options, please visit the official
+      <a target="_blank" href="https://www.chartjs.org/docs/latest/">Chart.js documentation</a>
+      .
+    </div>
+  </div>
+  <div class="card mb-4">
+    <div class="card-header">
+      <i class="fas fa-chart-area mr-1"></i>
+      Monthly Revenue Graph
+    </div>
+    <div class="card-body">
+      <div class="chart" id="monthly">
+        <script>
+            var graphs = {{ monthly|safe }}
+                Plotly.plot('monthly', graphs, {});
+        </script>
+      </div>
+    </div>
+    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <i class="fas fa-chart-bar mr-1"></i>
+          {{ ym }} Client Revenue | Music CMS: ${{ music_month_reveue|stringformat:".2f"|intcomma }}, Other: ${{ non_music_month_reveue|stringformat:".2f"|intcomma }}
+        </div>
+        <div class="card-body">
+          <div class="chart" id="abc">
+            <script>
+                var graphs = {{ client_revenue|safe }}
+                    Plotly.plot('abc', graphs, {});
+            </script>
+          </div>
+        </div>
+        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <i class="fas fa-chart-pie mr-1"></i>
+          {{ ym }} Collab Profit: ${{ month_profit|stringformat:".2f"|intcomma }}
+        </div>
+        <div class="card-body">
+          <div class="chart" id="gg">
+            <script>
+                var graphs = {{ client_profit|safe }}
+                    Plotly.plot('gg', graphs, {});
+            </script>
+          </div>
+        </div>
+        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <i class="fas fa-chart-bar mr-1"></i>
+          {{ ym }} Client Revenue
+        </div>
+        <div class="card-body">
+          <div class="chart" id="by_office">
+            <script>
+                var graphs = {{ by_office|safe }}
+                    Plotly.plot('by_office', graphs, {});
+            </script>
+          </div>
+        </div>
+        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <i class="fas fa-chart-pie mr-1"></i>
+          2020 June Collab Profit
+        </div>
+        <div class="card-body">
+          <canvas id="myPieChart" width="100%" height="50"></canvas>
+        </div>
+        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+      </div>
+    </div>
+  </div>
+  </div>
+{% endblock %}
+{% block bottomscript %}
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+{% endblock %}

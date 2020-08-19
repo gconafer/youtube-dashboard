@@ -1,0 +1,46 @@
+{% extends 'includes/base.html' %}
+{% load static %}
+{% block pagescript %}
+  <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet"
+        crossorigin="anonymous"/>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+  <script src="{% static 'assets/demo/datatables-demo.js' %}"></script>
+{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+    <h1 class="mt-4">Managers</h1>
+    <ol class="breadcrumb mb-4">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+      <li class="breadcrumb-item active">Managers</li>
+    </ol>
+    <div class="card mb-4">
+      <div class="card-header"><i class="fas fa-table mr-1"></i>Manager List</div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+            <tr>
+              <th>Manager Username</th>
+              <th>Manager Email</th>
+              <th>Show</th>
+              <th>Edit</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for c in managers %}
+              <tr>
+                <td>{{ c.user.username }}</td>
+                <td>{{ c.user.email }}</td>
+                <td>Show</td>
+                <td>Edit</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

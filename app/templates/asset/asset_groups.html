@@ -1,0 +1,54 @@
+{% extends 'includes/base.html' %}
+{% load static %}
+
+{% block pagescript %}
+  <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet"
+        crossorigin="anonymous"/>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+  <script src="{% static 'assets/demo/datatables-demo.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="container-fluid">
+    <h1 class="mt-4">Assets</h1>
+    <ol class="breadcrumb mb-4">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+      <li class="breadcrumb-item active">Asset Groups</li>
+    </ol>
+
+
+    <div class="card mb-4 mx-auto">
+      <div class="card-header"><i class="fa fa-folder fa-fw" aria-hidden="true"></i>Asset Groups</div>
+      <div class="card-body">
+        <div class="table-responsive">
+
+          <form action="{% url 'asset_update' %}" method="POST">
+            <table id="dataTable" class="table table-bordered table-hover" style="width:100%">
+              <thead>
+              <tr>
+                <th class="success">Asset Group Name</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for asset_group in asset_groups %}
+                {#								<tr>#}
+                <tr style="cursor:pointer;"
+                    onClick=" location.href='{% url 'asset_group_asset_list' asset_group_id=asset_group.id %}' ">
+
+                  {#								<a href="{% url 'asset_group_asset_list' asset_group_id=group.id %}">{{ group.group_name }}</a>#}
+                  <td class="success">{{ asset_group.group_name }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            <hr>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+{% endblock %}

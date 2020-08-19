@@ -1,0 +1,152 @@
+{% extends 'includes/base.html' %}
+{% load mathfilters %}
+
+{% block content %}
+  <div class="container-fluid">
+    <h1 class="mt-4 text-center">{{ client.client_name }}: {{ year_month }}</h1>
+    <br>
+    <div class="card mb-4 mx-auto" style="width:80%">
+      <div class="card-header"><i class="fas fa-file-invoice-dollar fa-fw"></i>Payment Detail</div>
+      <div class="card-body">
+        {% if total_sum > 0 %}
+          <div class="progress" style="height: 30px">
+            <div class="progress-bar bg-danger" role="progressbar"
+                 style="width: {{ total_revenue.ch|div:total_sum|mul:100 }}%">{{ total_revenue.ch|div:total_sum|mul:100|stringformat:".2f" }}%
+            </div>
+            {% if total_revenue.sr != 0 %}
+              <div class="progress-bar bg-warning" role="progressbar"
+                   style="width: {{ total_revenue.sr|div:total_sum|mul:100 }}%">{{ total_revenue.sr|div:total_sum|mul:100|stringformat:".2f" }}%
+              </div>
+            {% endif %}
+            {% if total_revenue.at != 0 %}
+              <div class="progress-bar bg-info" role="progressbar"
+                   style="width: {{ total_revenue.at|div:total_sum|mul:100 }}%">{{ total_revenue.at|div:total_sum|mul:100|stringformat:".2f" }}%
+              </div>
+            {% endif %}
+            {% if total_revenue.mc != 0 %}
+              <div class="progress-bar bg-success" role="progressbar"
+                   style="width: {{ total_revenue.mc|div:total_sum|mul:100 }}%">{{ total_revenue.mc|div:total_sum|mul:100|stringformat:".2f" }}%
+              </div>
+            {% endif %}
+            {% if total_revenue.pm != 0 %}
+              <div class="progress-bar bg-primary" role="progressbar"
+                   style="width: {{ total_revenue.pm|div:total_sum|mul:100 }}%">{{ total_revenue.pm|div:total_sum|mul:100|stringformat:".2f" }}%
+              </div>
+            {% endif %}
+
+          </div>
+          <hr>
+          <div class="table-responsive">
+            <table id="example" class="table table-bordered table-hover" style="width:100%">
+              <thead>
+              <tr>
+                <th style="width: 25%" class="success">Revenue Source</th>
+                <th style="width: 25%" class="success">Before Split</th>
+                <th style="width: 25%" class="success">After Split</th>
+                <th style="width: 25%" class="success">Collab Profit</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr class="table-danger">
+                <td class="success"><a data-toggle="collapse" href="#collapseChannel" role="button"
+                                       aria-expanded="false" aria-controls="collapseExample">
+                  <b>Channel</b></a></td>
+                <td class="success">${{ total_revenue.ch|stringformat:".2f" }}</td>
+                <td class="success">${{ split_revenue.ch|stringformat:".2f" }}</td>
+                <td class="success">${{ total_revenue.ch|sub:split_revenue.ch|stringformat:".2f" }}</td>
+              </tr>
+              {% for channel_name, channel_rev in ch_revenues.items %}
+                <tr class="table-danger">
+                  <td id="collapseChannel" class="collapse out"> &nbsp-{{ channel_name }}</td>
+                  <td id="collapseChannel" class="collapse out"> ${{ channel_rev.total |stringformat:".2f" }}</td>
+                  <td id="collapseChannel" class="collapse out"> ${{ channel_rev.split |stringformat:".2f" }}</td>
+                  <td id="collapseChannel" class="collapse out"> ${{ channel_rev.total |sub:channel_rev.split|stringformat:".2f" }}</td>
+                </tr>
+              {% endfor %}
+              <tr class="table-warning">
+                <td class="success"><a data-toggle="collapse" href="#collapseSR" role="button"
+                                       aria-expanded="false" aria-controls="collapseExample">
+                  <b>Sound Recording</b>
+                </a></td>
+                <td class="success">${{ total_revenue.sr|stringformat:".2f" }}</td>
+                <td class="success">${{ split_revenue.sr|stringformat:".2f" }}</td>
+                <td class="success">${{ total_revenue.sr|sub:split_revenue.sr|stringformat:".2f" }}</td>
+              </tr>
+              {% for sr_name, sr_rev in sr_revenues.items %}
+                <tr class="table-warning">
+                  <td id="collapseSR" class="collapse out">&nbsp-{{ sr_name }}</td>
+                  <td id="collapseSR" class="collapse out">${{ sr_rev.total|stringformat:".2f" }}</td>
+                  <td id="collapseSR" class="collapse out">${{ sr_rev.split|stringformat:".2f" }}</td>
+                  <td id="collapseSR" class="collapse out">${{ sr_rev.total|sub:sr_rev.split|stringformat:".2f" }}</td>
+                </tr>
+              {% endfor %}
+              <tr class="table-info">
+                <td class="success"><a data-toggle="collapse" href="#collapseAT" role="button"
+                                       aria-expanded="false" aria-controls="collapseExample">
+                  <b>Art Track</b>
+                </a></td>
+                <td class="success">${{ total_revenue.at|stringformat:".2f" }}</td>
+                <td class="success">${{ split_revenue.at|stringformat:".2f" }}</td>
+                <td class="success">${{ total_revenue.at|sub:split_revenue.at|stringformat:".2f" }}</td>
+              </tr>
+              {% for at_name, at_rev in at_revenues.items %}
+                <tr class="table-info">
+                  <td id="collapseAT" class="collapse out">&nbsp-{{ at_name }}</td>
+                  <td id="collapseAT" class="collapse out">${{ at_rev.total|stringformat:".2f" }}</td>
+                  <td id="collapseAT" class="collapse out">${{ at_rev.split|stringformat:".2f" }}</td>
+                  <td id="collapseAT" class="collapse out">${{ at_rev.total|sub:at_rev.split|stringformat:".2f" }}</td>
+                </tr>
+              {% endfor %}
+              <tr class="table-success">
+                <td class="success"><a data-toggle="collapse" href="#collapseMC" role="button"
+                                       aria-expanded="false" aria-controls="collapseExample">
+                  <b>Manual Claiming</b> </a></td>
+                <td class="success">${{ total_revenue.mc|stringformat:".2f" }}</td>
+                <td class="success">${{ split_revenue.mc|stringformat:".2f" }}</td>
+                <td class="success">${{ total_revenue.mc|sub:split_revenue.mc|stringformat:".2f" }}</td>
+              </tr>
+              {% for mc_name, mc_rev in mc_revenues.items %}
+                <tr class="table-info">
+                  <td id="collapseMC" class="collapse out">&nbsp-{{ mc_name }}</td>
+                  <td id="collapseMC" class="collapse out">${{ mc_rev.total|stringformat:".2f" }}</td>
+                  <td id="collapseMC" class="collapse out">${{ mc_rev.split|stringformat:".2f" }}</td>
+                  <td id="collapseMC" class="collapse out">${{ mc_rev.total|sub:mc_rev.split|stringformat:".2f" }}</td>
+                </tr>
+              {% endfor %}
+              <tr class="table-primary">
+                <td class="success"><a data-toggle="collapse" href="#collapsePM" role="button"
+                                       aria-expanded="false" aria-controls="collapseExample">
+                  <b>Promotion</b> </a></td>
+                <td class="success">${{ total_revenue.pm|stringformat:".2f" }}</td>
+                <td class="success">${{ split_revenue.pm|stringformat:".2f" }}</td>
+                <td class="success">${{ total_revenue.pm|sub:split_revenue.pm|stringformat:".2f" }}</td>
+              </tr>
+              {% for name, rev in promo_revenues.items %}
+                <tr class="table-info">
+                  <td id="collapsePM" class="collapse out">&nbsp-{{ name }}</td>
+                  <td id="collapsePM" class="collapse out">${{ rev.total|stringformat:".2f" }}</td>
+                  <td id="collapsePM" class="collapse out">${{ rev.split|stringformat:".2f" }}</td>
+                  <td id="collapsePM" class="collapse out">${{ rev.total|sub:rev.split|stringformat:".2f" }}</td>
+                </tr>
+              {% endfor %}
+              <tr class="table-secondary">
+                <td class="success">Total</td>
+                <td class="success">${{ total_sum |stringformat:".2f" }}</td>
+                <td class="success">${{ split_sum |stringformat:".2f" }}</td>
+                <td class="success">${{ total_sum |sub:split_sum|stringformat:".2f" }}</td>
+              </tr>
+              </tbody>
+            </table>
+            <a href="{% url 'payment_export' year_month=year_month client_id=client.id %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Export CSV</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+
+  </div>
+{% endblock %}
+{% block bottomscript %}
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+{% endblock %}
+

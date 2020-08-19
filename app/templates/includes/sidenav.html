@@ -1,0 +1,35 @@
+<div id="layoutSidenav_nav">
+  <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+    <div class="sb-sidenav-menu">
+      <div class="nav">
+        <div class="sb-sidenav-menu-heading">Core</div>
+        <a class="nav-link" href="{% url 'home' %}">
+          <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt fa-fw"></i></div>
+          Dashboard</a>
+        <a class="nav-link" href="{% url 'client' %}">
+          <div class="sb-nav-link-icon"><i class="fas fa-users fa-fw"></i></div>
+          Client</a>
+        <a class="nav-link" href="{% url 'manager' %}">
+          <div class="sb-nav-link-icon"><i class="fas fa-user-astronaut fa-fw"></i></div>
+          Manager</a>
+        <a class="nav-link" href="{% url 'asset_groups' %}">
+          <div class="sb-nav-link-icon"><i class="fa fa-folder fa-fw" aria-hidden="true"></i></div>
+          Asset Groups</a>
+        <a class="nav-link" href="{% url 'asset' mode='office' asset_group_id='all' %}">
+          <div class="sb-nav-link-icon"><i class="fa fa-film fa-fw" aria-hidden="true"></i></div>
+          Assets</a>
+        <div class="sb-sidenav-menu-heading">Add</div>
+        <a class="nav-link" href="{% url 'add_client' %}">
+          <div class="sb-nav-link-icon"><i class="fas fa-user-plus fa-fw"></i></div>
+          Add Client</a>
+        <a class="nav-link" href="{% url 'manager_signup' %}">
+          <div class="sb-nav-link-icon"><i class="fas fa-user-plus fa-fw"></i></div>
+          Add Manager</a>
+      </div>
+    </div>
+    <div class="sb-sidenav-footer">
+      <div class="small">Logged in as:</div>
+      Start Bootstrap
+    </div>
+  </nav>
+</div>

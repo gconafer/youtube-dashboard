@@ -1,0 +1,17 @@
+{% extends 'includes/base.html' %}
+{% load crispy_forms_tags %}
+{% block pagescript %}
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+{% endblock %}
+{% block content %}
+  <div id="layoutSidenav_content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8 col-sm-10 col-12">
+          {% csrf_token %}
+          {% crispy form %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
