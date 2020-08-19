@@ -184,12 +184,12 @@ def payment_export(request, client_id, year_month):
           r['asset_title'] = Asset.objects.get(asset_id=r['asset_id']).asset_title
           r['partner_revenue'] = r.pop('total')
           ch_revenues[ag.group_name].append(r)
-      mc_rev = AssetRevenueView.objects.filter(asset__in=Asset.objects.filter(asset_group=ag), year_month=year_month, manual_claimed=True, promotion=False)
       if len(mc_rev) > 0:
         rev_by_id = mc_rev.values('asset_id').annotate(total=Sum('partner_revenue')).order_by('-total')
         for r in rev_by_id:
           r['asset_title'] = Asset.objects.get(asset_id=r['asset_id']).asset_title
           r['partner_revenue'] = r.pop('total')
+          print(r)
           mc_revenues.append(r)
 
   # Art Track Assets to List
@@ -411,7 +411,8 @@ def payment_export(request, client_id, year_month):
     length.append(len(mc_revenues))
 
   item_list = [[i, ws.title, f"='{ws.title}'!C{length[i] + 4}"] for i, ws in enumerate(sh.worksheets())][1:]
-  print(item_list)
+  # print(item_list)
+  print(mc_revenues)
   sh.batch_update(batch_update_request)
   summary_update = []
   summary_update.append({
