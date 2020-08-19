@@ -276,7 +276,7 @@ def payment_export(request, client_id, year_month):
       'values': [['', '수익 분배 전 금액', f'=SUM(C3:C{2 + len(sr_revenues[ag])})'], ['', '수익 분배 후 금액', f'=SUM(C3:C{2 + len(sr_revenues[ag])})*{float(client.at_split)}']],
     })
     template = sh.worksheet(sh.worksheets()[1].title)
-    ws = template.duplicate(new_sheet_name='음원', insert_sheet_index=len(sh.worksheets()))
+    ws = template.duplicate(new_sheet_name=ag, insert_sheet_index=len(sh.worksheets()))
     ws.batch_update(update_request[ag], value_input_option='USER_ENTERED')
     batch_update_request = asset_title_left(sr_revenues, batch_update_request, ws, ag)
     batch_update_request = bottom_merge(sr_revenues, batch_update_request, ws, ag)
@@ -300,7 +300,7 @@ def payment_export(request, client_id, year_month):
       'values': [['', '수익 분배 전 금액', f'=SUM(C3:C{2 + len(at_revenues[ag])})'], ['', '수익 분배 후 금액', f'=SUM(C3:C{2 + len(at_revenues[ag])})*{float(client.at_split)}']],
     })
     template = sh.worksheet(sh.worksheets()[1].title)
-    ws = template.duplicate(new_sheet_name='아트트랙', insert_sheet_index=len(sh.worksheets()))
+    ws = template.duplicate(new_sheet_name=ag, insert_sheet_index=len(sh.worksheets()))
     ws.batch_update(update_request[ag], value_input_option='USER_ENTERED')
     batch_update_request = asset_title_left(at_revenues, batch_update_request, ws, ag)
     batch_update_request = bottom_merge(at_revenues, batch_update_request, ws, ag)
