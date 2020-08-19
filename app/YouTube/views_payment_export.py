@@ -176,7 +176,6 @@ def payment_export(request, client_id, year_month):
   if len(ch_groups) > 0:
     for ag in ch_groups:
       ch_revenues[ag.group_name] = []
-      mc_revenues = []
       rev = AssetRevenueView.objects.filter(asset__in=Asset.objects.filter(asset_group=ag), year_month=year_month, manual_claimed=False, promotion=False)
       mc_rev = AssetRevenueView.objects.filter(asset__in=Asset.objects.filter(asset_group=ag), year_month=year_month, manual_claimed=True, promotion=False)
       if len(rev) > 0:
@@ -209,7 +208,6 @@ def payment_export(request, client_id, year_month):
   if len(sr_groups) > 0:
     for ag in sr_groups:
       sr_revenues[ag.group_name] = []
-      mc_revenues = []
       rev = AssetRevenueView.objects.filter(asset__in=Asset.objects.filter(asset_group=ag), year_month=year_month, manual_claimed=False, promotion=False)
       mc_rev = AssetRevenueView.objects.filter(asset__in=Asset.objects.filter(asset_group=ag), year_month=year_month, manual_claimed=True, promotion=False)
       if len(rev) > 0:
