@@ -2,6 +2,8 @@
 
 ~~Currently Using Gitlab CI/CD~~
 
+Using AWS Codepipeline
+
 Removed Service Account json and replaced with Environment variables
 
 ## How to?
