@@ -439,7 +439,7 @@ def payment_export(request, client_id, year_month):
   summary_update.append({'range': f'D17', 'values': [[f'{year_month.split("-")[0]}년 {year_month.split("-")[1]}월 수익 내역']]})
   summary_update.append({'range': f'B13', 'values': [[client.payment_method]]})
   summary_update.append({'range': f'B8', 'values': [[client.client_name]]})
-  summary_update.append({'range': f'B9', 'values': [['n/a']]})
+  summary_update.append({'range': f'B9', 'values': [['']]})
   summary_update.append({'range': f'B10', 'values': [[client.email]]})
   ws.batch_update(summary_update, value_input_option='USER_ENTERED')
 
