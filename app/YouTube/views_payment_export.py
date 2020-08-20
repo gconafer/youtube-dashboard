@@ -258,7 +258,7 @@ def payment_export(request, client_id, year_month):
   # Create Spread Sheet
   pyg = pygsheets.authorize(service_account_file='service_account.json')
   sample_report_id = '1xGQJEigfpbWgksvvrRTs9cxXTr0CX_H5VR0vY2ZcSIY'
-  folder_id = '1OcDHBR_QrSrv8gr7pLFnKOVgPsCnZviZ'
+  folder_id = '1hFPH6dOo5kjwb4EsDRd5y4IFUE9nMGoM'
   new_ss = pyg.drive.copy_file(file_id=sample_report_id, title=f'{year_month.split("-")[0]}년 {int(year_month.split("-")[1])}월 수익 정산서 [{client}]', folder=folder_id)
   sh = gc.open_by_key(new_ss['id'])
 
