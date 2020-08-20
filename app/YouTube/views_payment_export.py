@@ -181,13 +181,15 @@ def payment_export(request, client_id, year_month):
       if len(rev) > 0:
         rev_by_id = rev.values('asset_id').annotate(total=Sum('partner_revenue')).order_by('-total')
         for r in rev_by_id:
-          r['asset_title'] = Asset.objects.get(asset_id=r['asset_id']).asset_title
+          title = Asset.objects.get(asset_id=r['asset_id']).asset_title
+          r['asset_title'] = title if title else ''
           r['partner_revenue'] = r.pop('total')
           ch_revenues[ag.group_name].append(r)
       if len(mc_rev) > 0:
         rev_by_id = mc_rev.values('asset_id').annotate(total=Sum('partner_revenue')).order_by('-total')
         for r in rev_by_id:
-          r['asset_title'] = Asset.objects.get(asset_id=r['asset_id']).asset_title
+          title = Asset.objects.get(asset_id=r['asset_id']).asset_title
+          r['asset_title'] = title if title else ''
           r['partner_revenue'] = r.pop('total')
           mc_revenues.append(r)
 
@@ -199,7 +201,8 @@ def payment_export(request, client_id, year_month):
       if len(rev) > 0:
         rev_by_id = rev.values('asset_id').annotate(total=Sum('partner_revenue')).order_by('-total')
         for r in rev_by_id:
-          r['asset_title'] = Asset.objects.get(asset_id=r['asset_id']).asset_title
+          title = Asset.objects.get(asset_id=r['asset_id']).asset_title
+          r['asset_title'] = title if title else ''
           r['partner_revenue'] = r.pop('total')
           at_revenues[ag.group_name].append(r)
 
@@ -212,7 +215,8 @@ def payment_export(request, client_id, year_month):
       if len(rev) > 0:
         rev_by_id = rev.values('asset_id').annotate(total=Sum('partner_revenue')).order_by('-total')
         for r in rev_by_id:
-          r['asset_title'] = Asset.objects.get(asset_id=r['asset_id']).asset_title
+          title = Asset.objects.get(asset_id=r['asset_id']).asset_title
+          r['asset_title'] = title if title else ''
           r['partner_revenue'] = r.pop('total')
           sr_revenues[ag.group_name].append(r)
 
@@ -243,7 +247,8 @@ def payment_export(request, client_id, year_month):
           order by partner_revenue desc;
         """)
         for promo_rev in cursor.fetchall():
-          tmp = {'asset_id': promo_rev[0], 'asset_title': promo_rev[1], 'partner_revenue': promo_rev[2]}
+          title = promo_rev[1] if title else ''
+          tmp = {'asset_id': promo_rev[0], 'asset_title': title, 'partner_revenue': promo_rev[2]}
           sr_revenues[ag.group_name].append(tmp)
 
       sr_revenues[ag.group_name] = pd.DataFrame(sr_revenues[ag.group_name]).groupby(['asset_id', 'asset_title']).sum().reset_index().sort_values(by='partner_revenue', ascending=False).to_dict(
@@ -251,7 +256,8 @@ def payment_export(request, client_id, year_month):
       if len(mc_rev) > 0:
         rev_by_id = mc_rev.values('asset_id').annotate(total=Sum('partner_revenue')).order_by('-total')
         for r in rev_by_id:
-          r['asset_title'] = Asset.objects.get(asset_id=r['asset_id']).asset_title
+          title = Asset.objects.get(asset_id=r['asset_id']).asset_title
+          r['asset_title'] = title if title else ''
           r['partner_revenue'] = r.pop('total')
           mc_revenues.append(r)
 
