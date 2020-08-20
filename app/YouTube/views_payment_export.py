@@ -189,7 +189,6 @@ def payment_export(request, client_id, year_month):
         for r in rev_by_id:
           r['asset_title'] = Asset.objects.get(asset_id=r['asset_id']).asset_title
           r['partner_revenue'] = r.pop('total')
-          print(r)
           mc_revenues.append(r)
 
   # Art Track Assets to List
@@ -247,7 +246,8 @@ def payment_export(request, client_id, year_month):
           tmp = {'asset_id': promo_rev[0], 'asset_title': promo_rev[1], 'partner_revenue': promo_rev[2]}
           sr_revenues[ag.group_name].append(tmp)
 
-      sr_revenues[ag.group_name] = pd.DataFrame(sr_revenues[ag.group_name]).groupby(['asset_id', 'asset_title']).sum().reset_index().sort_values(by='partner_revenue', ascending=False).to_dict('records')
+      sr_revenues[ag.group_name] = pd.DataFrame(sr_revenues[ag.group_name]).groupby(['asset_id', 'asset_title']).sum().reset_index().sort_values(by='partner_revenue', ascending=False).to_dict(
+        'records')
       if len(mc_rev) > 0:
         rev_by_id = mc_rev.values('asset_id').annotate(total=Sum('partner_revenue')).order_by('-total')
         for r in rev_by_id:
@@ -287,7 +287,6 @@ def payment_export(request, client_id, year_month):
       ws = template.duplicate(new_sheet_name=ag.split(' - ')[-1], insert_sheet_index=len(sh.worksheets()))
       ws.batch_update(update_request[ag], value_input_option='USER_ENTERED')
       batch_update_request = asset_title_left(ch_revenues, batch_update_request, ws, ag)
-      # batch_update_request = bottom_merge(ch_revenues, batch_update_request, ws, ag)
       batch_update_request = bottom_color(ch_revenues, batch_update_request, ws, ag)
       batch_update_request = add_border(ch_revenues, batch_update_request, ws, ag)
       batch_update_request = format_currency(ch_revenues, batch_update_request, ws, ag)
@@ -312,7 +311,6 @@ def payment_export(request, client_id, year_month):
       ws = template.duplicate(new_sheet_name=ag, insert_sheet_index=len(sh.worksheets()))
       ws.batch_update(update_request[ag], value_input_option='USER_ENTERED')
       batch_update_request = asset_title_left(sr_revenues, batch_update_request, ws, ag)
-      # batch_update_request = bottom_merge(sr_revenues, batch_update_request, ws, ag)
       batch_update_request = bottom_color(sr_revenues, batch_update_request, ws, ag)
       batch_update_request = add_border(sr_revenues, batch_update_request, ws, ag)
       batch_update_request = format_currency(sr_revenues, batch_update_request, ws, ag)
@@ -337,7 +335,6 @@ def payment_export(request, client_id, year_month):
       ws = template.duplicate(new_sheet_name=ag, insert_sheet_index=len(sh.worksheets()))
       ws.batch_update(update_request[ag], value_input_option='USER_ENTERED')
       batch_update_request = asset_title_left(at_revenues, batch_update_request, ws, ag)
-      # batch_update_request = bottom_merge(at_revenues, batch_update_request, ws, ag)
       batch_update_request = bottom_color(at_revenues, batch_update_request, ws, ag)
       batch_update_request = add_border(at_revenues, batch_update_request, ws, ag)
       batch_update_request = format_currency(at_revenues, batch_update_request, ws, ag)
@@ -362,7 +359,6 @@ def payment_export(request, client_id, year_month):
     ws = template.duplicate(new_sheet_name="직접소유권주장", insert_sheet_index=len(sh.worksheets()))
     ws.batch_update(update_request["mc"], value_input_option='USER_ENTERED')
     batch_update_request = asset_title_left(mc_revenues, batch_update_request, ws, "mc")
-    # batch_update_request = bottom_merge(mc_revenues, batch_update_request, ws, "mc")
     batch_update_request = bottom_color(mc_revenues, batch_update_request, ws, "mc")
     batch_update_request = add_border(mc_revenues, batch_update_request, ws, "mc")
     batch_update_request = format_currency(mc_revenues, batch_update_request, ws, "mc")
@@ -372,7 +368,6 @@ def payment_export(request, client_id, year_month):
   total_sheet = len(sh.worksheets())
   ws = sh.worksheet(sh.worksheets()[0].title)
 
-  # total_sheet = len(ch_revenues) + len(at_revenues) + len(sr_revenues) + 1
   batch_update_request['requests'].append({
     "insertDimension": {
       "range": {
@@ -396,6 +391,23 @@ def payment_export(request, client_id, year_month):
       "mergeType": "MERGE_ROWS"
     }
   })
+  batch_update_request['requests'].append({
+    "updateBorders": {
+      "range": {
+        "sheetId": ws.id,
+        "startRowIndex": 22,
+        "endRowIndex": 20 + total_sheet,
+        "startColumnIndex": 1,
+        "endColumnIndex": 6
+      },
+      "top": {"style": "SOLID", "width": 2},
+      "bottom": {"style": "SOLID", "width": 2},
+      "innerHorizontal": {"style": "SOLID", "width": 2},
+      "innerVertical": {"style": "SOLID", "width": 2},
+      "left": {"style": "SOLID", "width": 2},
+      "right": {"style": "SOLID", "width": 2}
+    }
+  })
 
   length = [0]
   for ag in ch_revenues:
@@ -411,18 +423,15 @@ def payment_export(request, client_id, year_month):
     length.append(len(mc_revenues))
 
   item_list = [[i, ws.title, f"='{ws.title}'!C{length[i] + 4}"] for i, ws in enumerate(sh.worksheets())][1:]
-  # print(item_list)
-  print(mc_revenues)
   sh.batch_update(batch_update_request)
   summary_update = []
-  summary_update.append({
-    'range': f'B22:D{22 + total_sheet}',
-    'values': item_list
-  })
-  summary_update.append({
-    'range': f'E{23 + total_sheet}',
-    'values': [[f'=SUM(D22:E{22 + total_sheet - 2})']]
-  })
+  summary_update.append({'range': f'B22:D{22 + total_sheet}', 'values': item_list})
+  summary_update.append({'range': f'E{23 + total_sheet}', 'values': [[f'=SUM(D22:E{22 + total_sheet - 2})']]})
+  summary_update.append({'range': f'D17', 'values': [[f'{year_month.split("-")[0]}년 {year_month.split("-")[1]}월 수익 내역']]})
+  summary_update.append({'range': f'B13', 'values': [[client.payment_method]]})
+  summary_update.append({'range': f'B8', 'values': [[client.client_name]]})
+  summary_update.append({'range': f'B9', 'values': [['n/a']]})
+  summary_update.append({'range': f'B10', 'values': [[client.email]]})
   ws.batch_update(summary_update, value_input_option='USER_ENTERED')
 
   return redirect('payment_history', client_id=client_id, year_month=year_month)
