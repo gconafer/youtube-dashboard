@@ -35,6 +35,7 @@ urlpatterns = \
     path('test_country', views.channel_id_country),
 
     path('dashboard/<str:ym>', views.dashboard, name='dashboard'),
+    path('country-dashboard/<str:ym>', views.country_dashboard, name='country_dashboard'),
 
     path('promotion', views.promotions, name='promotion'),
 

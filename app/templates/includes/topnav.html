@@ -16,17 +16,24 @@
           class="fa fa-film fa-fw" aria-hidden="true"></i> Assets</a>
     </li>
   </ul>
-  <ul class="navbar-nav ml-auto ml-md-0">
-    <li class="nav-item dropdown {% if request.resolver_match.url_name == "promotion" %}active{% endif %}">
-      <a class="nav-link" id="userDropdown" href="{% url 'promotion' %}"><i
-          class="fas fa-gift fa-fw" aria-hidden="true"></i> Promotion</a>
-    </li>
-  </ul>
-  {% if request.user.is_staff %}
+  {% if request.user.is_admin %}
+    <ul class="navbar-nav ml-auto ml-md-0">
+      <li class="nav-item dropdown {% if request.resolver_match.url_name == "promotion" %}active{% endif %}">
+        <a class="nav-link" id="userDropdown" href="{% url 'promotion' %}"><i
+            class="fas fa-gift fa-fw" aria-hidden="true"></i> Promotion</a>
+      </li>
+    </ul>
     <ul class="navbar-nav ml-auto ml-md-0">
       <li class="nav-item dropdown {% if request.resolver_match.url_name == "dashboard" %}active{% endif %}">
         <a class="nav-link" id="userDropdown" href="{% url 'dashboard' ym='2020-07' %}"><i
             class="fas fa-chart-line fa-fw" aria-hidden="true"></i> Dashboard</a>
+      </li>
+    </ul>
+  {% elif request.user.is_staff %}
+    <ul class="navbar-nav ml-auto ml-md-0">
+      <li class="nav-item dropdown {% if request.resolver_match.url_name == "country_dashboard" %}active{% endif %}">
+        <a class="nav-link" id="userDropdown" href="{% url 'country_dashboard' ym='2020-07' %}"><i
+            class="fas fa-chart-line fa-fw" aria-hidden="true"></i> Country Dashboard</a>
       </li>
     </ul>
   {% endif %}

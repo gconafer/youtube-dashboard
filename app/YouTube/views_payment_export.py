@@ -421,8 +421,14 @@ def payment_export(request, client_id, year_month):
       length.append(len(at_revenues[ag]))
   if len(mc_revenues) > 0:
     length.append(len(mc_revenues))
-  title = ws.title.replace("'", "''")
-  item_list = [[i, ws.title, f"='{title}'!C{length[i] + 4}"] for i, ws in enumerate(sh.worksheets())][1:]
+
+  # item_list = []
+  # for i, ws in enumerate(sh.worksheets()):
+  #   title = ws.title.replace("'", "''")
+  #   item_list.append([i, ws.title, f"='{title}'!C{length[i] + 4}"])
+  # item_list = item_list[1:]
+  # print(item_list)
+  item_list = [[i, ws.title, f"""='{ws.title.replace("'", "''")}'!C{length[i] + 4}"""] for i, ws in enumerate(sh.worksheets())][1:]
   sh.batch_update(batch_update_request)
   summary_update = []
   summary_update.append({'range': f'B22:D{22 + total_sheet}', 'values': item_list})
