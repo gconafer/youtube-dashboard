@@ -274,7 +274,7 @@ def payment_export(request, client_id, year_month):
         update_request[ag] = []
         update_request[ag].append({
           'range': 'A1:B1',
-          'values': [[ag.split(' - ')[-1] + ' 채널', '']]
+          'values': [['', ag.split(' - ')[-1] + ' 채널']]
         })
         update_request[ag].append({
           'range': f'A3:C{2 + len(ch_revenues[ag])}',
@@ -299,7 +299,7 @@ def payment_export(request, client_id, year_month):
         update_request[ag] = []
         update_request[ag].append({
           'range': 'A1:B1',
-          'values': [['음원', '']]
+          'values': [['', '음원']]
         })
         update_request[ag].append({
           'range': f'A3:C{2 + len(sr_revenues[ag])}',
@@ -310,7 +310,10 @@ def payment_export(request, client_id, year_month):
           'values': [['', '수익 분배 전 금액', f'=SUM(C3:C{2 + len(sr_revenues[ag])})'], ['', '수익 분배 후 금액', f'=SUM(C3:C{2 + len(sr_revenues[ag])})*{float(client.sr_split)}']],
         })
         template = sh.worksheet(sh.worksheets()[1].title)
-        ws = template.duplicate(new_sheet_name=ag, insert_sheet_index=len(sh.worksheets()))
+        if len(sr_revenues) == 1:
+          ws = template.duplicate(new_sheet_name='음원', insert_sheet_index=len(sh.worksheets()))
+        else:
+          ws = template.duplicate(new_sheet_name=ag, insert_sheet_index=len(sh.worksheets()))
         ws.batch_update(update_request[ag], value_input_option='USER_ENTERED')
         batch_update_request = asset_title_left(sr_revenues, batch_update_request, ws, ag)
         batch_update_request = bottom_color(sr_revenues, batch_update_request, ws, ag)
@@ -324,7 +327,7 @@ def payment_export(request, client_id, year_month):
         update_request[ag] = []
         update_request[ag].append({
           'range': 'A1:B1',
-          'values': [['아트트랙', '']]
+          'values': [['', '아트트랙']]
         })
         update_request[ag].append({
           'range': f'A3:C{2 + len(at_revenues[ag])}',
@@ -335,7 +338,10 @@ def payment_export(request, client_id, year_month):
           'values': [['', '수익 분배 전 금액', f'=SUM(C3:C{2 + len(at_revenues[ag])})'], ['', '수익 분배 후 금액', f'=SUM(C3:C{2 + len(at_revenues[ag])})*{float(client.at_split)}']],
         })
         template = sh.worksheet(sh.worksheets()[1].title)
-        ws = template.duplicate(new_sheet_name=ag, insert_sheet_index=len(sh.worksheets()))
+        if len(at_revenues) == 1:
+          ws = template.duplicate(new_sheet_name='아트트랙', insert_sheet_index=len(sh.worksheets()))
+        else:
+          ws = template.duplicate(new_sheet_name=ag, insert_sheet_index=len(sh.worksheets()))
         ws.batch_update(update_request[ag], value_input_option='USER_ENTERED')
         batch_update_request = asset_title_left(at_revenues, batch_update_request, ws, ag)
         batch_update_request = bottom_color(at_revenues, batch_update_request, ws, ag)
@@ -348,7 +354,7 @@ def payment_export(request, client_id, year_month):
     update_request['mc'] = []
     update_request['mc'].append({
       'range': 'A1:B1',
-      'values': [['직접소유권주장', '']]
+      'values': [['', '직접소유권주장']]
     })
     update_request['mc'].append({
       'range': f'A3:C{2 + len(mc_revenues)}',
