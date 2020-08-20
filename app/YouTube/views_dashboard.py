@@ -1,12 +1,15 @@
 from time import time
 
 import plotly.graph_objects as go
+from django.contrib.auth.decorators import user_passes_test
 from django.core.cache import cache
 from django.db.models import Sum, F, Q
 from django.shortcuts import render
+
 from .models import AssetRevenueView, Client, AssetGroup, Asset
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def dashboard(request, ym):
   # Month Revenue
   starttime = time()
@@ -73,7 +76,8 @@ def dashboard(request, ym):
       mc_revs = AssetRevenueView.objects.filter(asset__asset_id__in=Asset.objects.filter(asset_group__in=AssetGroup.objects.filter(client=client)), manual_claimed=True, promotion=False, year_month=ym)
       if len(mc_revs) > 0:
         profit[client.client_name] += mc_revs.aggregate(Sum('partner_revenue'))['partner_revenue__sum'] * float(1 - client.mc_split)
-      promo_revs = AssetRevenueView.objects.filter(asset__asset_id__in=Asset.objects.filter(asset_group__in=AssetGroup.objects.filter(client=client)), manual_claimed=False, promotion=True, year_month=ym)
+      promo_revs = AssetRevenueView.objects.filter(asset__asset_id__in=Asset.objects.filter(asset_group__in=AssetGroup.objects.filter(client=client)), manual_claimed=False, promotion=True,
+                                                   year_month=ym)
       if len(promo_revs) > 0:
         profit[client.client_name] += promo_revs.aggregate(Sum('partner_revenue'))['partner_revenue__sum'] * 0.6
     labels = list(profit.keys())
