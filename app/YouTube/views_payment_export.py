@@ -258,7 +258,7 @@ def payment_export(request, client_id, year_month):
   # Create Spread Sheet
   pyg = pygsheets.authorize(service_account_file='service_account.json')
   sample_report_id = '1xGQJEigfpbWgksvvrRTs9cxXTr0CX_H5VR0vY2ZcSIY'
-  folder_id = '1NGrqUJ6OcFMY69mjNj63PUSdj4sTNmk2'
+  folder_id = '1BuwzXG7hJNvGoaH8nFMywGxIgQwwIGT9'
   new_ss = pyg.drive.copy_file(file_id=sample_report_id, title=f'{year_month.split("-")[0]}년 {int(year_month.split("-")[1])}월 수익 정산서 [{client}]', folder=folder_id)
   sh = gc.open_by_key(new_ss['id'])
 
@@ -270,74 +270,77 @@ def payment_export(request, client_id, year_month):
   # Add Channel Assets
   if len(ch_revenues) > 0:
     for i, ag in enumerate(ch_revenues):
-      update_request[ag] = []
-      update_request[ag].append({
-        'range': 'A1:B1',
-        'values': [[ag.split(' - ')[-1] + ' 채널', '']]
-      })
-      update_request[ag].append({
-        'range': f'A3:C{2 + len(ch_revenues[ag])}',
-        'values': [[rev['asset_id'], f'{rev["asset_title"]}', float(rev["partner_revenue"])] for rev in ch_revenues[ag]]
-      })
-      update_request[ag].append({
-        'range': f'A{3 + len(ch_revenues[ag])}:C{4 + len(ch_revenues[ag])}',
-        'values': [['', '수익 분배 전 금액', f'=SUM(C3:C{2 + len(ch_revenues[ag])})'], ['', '수익 분배 후 금액', f'=SUM(C3:C{2 + len(ch_revenues[ag])})*{float(client.channel_split)}']],
-      })
-      template = sh.worksheet(sh.worksheets()[1].title)
-      ws = template.duplicate(new_sheet_name=ag.split(' - ')[-1], insert_sheet_index=len(sh.worksheets()))
-      ws.batch_update(update_request[ag], value_input_option='USER_ENTERED')
-      batch_update_request = asset_title_left(ch_revenues, batch_update_request, ws, ag)
-      batch_update_request = bottom_color(ch_revenues, batch_update_request, ws, ag)
-      batch_update_request = add_border(ch_revenues, batch_update_request, ws, ag)
-      batch_update_request = format_currency(ch_revenues, batch_update_request, ws, ag)
+      if len(ch_revenues[ag]) > 0:
+        update_request[ag] = []
+        update_request[ag].append({
+          'range': 'A1:B1',
+          'values': [[ag.split(' - ')[-1] + ' 채널', '']]
+        })
+        update_request[ag].append({
+          'range': f'A3:C{2 + len(ch_revenues[ag])}',
+          'values': [[rev['asset_id'], f'{rev["asset_title"]}', float(rev["partner_revenue"])] for rev in ch_revenues[ag]]
+        })
+        update_request[ag].append({
+          'range': f'A{3 + len(ch_revenues[ag])}:C{4 + len(ch_revenues[ag])}',
+          'values': [['', '수익 분배 전 금액', f'=SUM(C3:C{2 + len(ch_revenues[ag])})'], ['', '수익 분배 후 금액', f'=SUM(C3:C{2 + len(ch_revenues[ag])})*{float(client.channel_split)}']],
+        })
+        template = sh.worksheet(sh.worksheets()[1].title)
+        ws = template.duplicate(new_sheet_name=ag.split(' - ')[-1], insert_sheet_index=len(sh.worksheets()))
+        ws.batch_update(update_request[ag], value_input_option='USER_ENTERED')
+        batch_update_request = asset_title_left(ch_revenues, batch_update_request, ws, ag)
+        batch_update_request = bottom_color(ch_revenues, batch_update_request, ws, ag)
+        batch_update_request = add_border(ch_revenues, batch_update_request, ws, ag)
+        batch_update_request = format_currency(ch_revenues, batch_update_request, ws, ag)
 
   # Add Sound Recording Assets
   if len(sr_revenues) > 0:
     for i, ag in enumerate(sr_revenues):
-      update_request[ag] = []
-      update_request[ag].append({
-        'range': 'A1:B1',
-        'values': [['음원', '']]
-      })
-      update_request[ag].append({
-        'range': f'A3:C{2 + len(sr_revenues[ag])}',
-        'values': [[rev['asset_id'], f'{rev["asset_title"]}', float(rev["partner_revenue"])] for rev in sr_revenues[ag]]
-      })
-      update_request[ag].append({
-        'range': f'A{3 + len(sr_revenues[ag])}:C{4 + len(sr_revenues[ag])}',
-        'values': [['', '수익 분배 전 금액', f'=SUM(C3:C{2 + len(sr_revenues[ag])})'], ['', '수익 분배 후 금액', f'=SUM(C3:C{2 + len(sr_revenues[ag])})*{float(client.sr_split)}']],
-      })
-      template = sh.worksheet(sh.worksheets()[1].title)
-      ws = template.duplicate(new_sheet_name=ag, insert_sheet_index=len(sh.worksheets()))
-      ws.batch_update(update_request[ag], value_input_option='USER_ENTERED')
-      batch_update_request = asset_title_left(sr_revenues, batch_update_request, ws, ag)
-      batch_update_request = bottom_color(sr_revenues, batch_update_request, ws, ag)
-      batch_update_request = add_border(sr_revenues, batch_update_request, ws, ag)
-      batch_update_request = format_currency(sr_revenues, batch_update_request, ws, ag)
+      if len(sr_revenues[ag]) > 0:
+        update_request[ag] = []
+        update_request[ag].append({
+          'range': 'A1:B1',
+          'values': [['음원', '']]
+        })
+        update_request[ag].append({
+          'range': f'A3:C{2 + len(sr_revenues[ag])}',
+          'values': [[rev['asset_id'], f'{rev["asset_title"]}', float(rev["partner_revenue"])] for rev in sr_revenues[ag]]
+        })
+        update_request[ag].append({
+          'range': f'A{3 + len(sr_revenues[ag])}:C{4 + len(sr_revenues[ag])}',
+          'values': [['', '수익 분배 전 금액', f'=SUM(C3:C{2 + len(sr_revenues[ag])})'], ['', '수익 분배 후 금액', f'=SUM(C3:C{2 + len(sr_revenues[ag])})*{float(client.sr_split)}']],
+        })
+        template = sh.worksheet(sh.worksheets()[1].title)
+        ws = template.duplicate(new_sheet_name=ag, insert_sheet_index=len(sh.worksheets()))
+        ws.batch_update(update_request[ag], value_input_option='USER_ENTERED')
+        batch_update_request = asset_title_left(sr_revenues, batch_update_request, ws, ag)
+        batch_update_request = bottom_color(sr_revenues, batch_update_request, ws, ag)
+        batch_update_request = add_border(sr_revenues, batch_update_request, ws, ag)
+        batch_update_request = format_currency(sr_revenues, batch_update_request, ws, ag)
 
   # Add Art Track Assets
   if len(at_revenues) > 0:
     for i, ag in enumerate(at_revenues):
-      update_request[ag] = []
-      update_request[ag].append({
-        'range': 'A1:B1',
-        'values': [['아트트랙', '']]
-      })
-      update_request[ag].append({
-        'range': f'A3:C{2 + len(at_revenues[ag])}',
-        'values': [[rev['asset_id'], f'{rev["asset_title"]}', float(rev["partner_revenue"])] for rev in at_revenues[ag]]
-      })
-      update_request[ag].append({
-        'range': f'A{3 + len(at_revenues[ag])}:C{4 + len(at_revenues[ag])}',
-        'values': [['', '수익 분배 전 금액', f'=SUM(C3:C{2 + len(at_revenues[ag])})'], ['', '수익 분배 후 금액', f'=SUM(C3:C{2 + len(at_revenues[ag])})*{float(client.at_split)}']],
-      })
-      template = sh.worksheet(sh.worksheets()[1].title)
-      ws = template.duplicate(new_sheet_name=ag, insert_sheet_index=len(sh.worksheets()))
-      ws.batch_update(update_request[ag], value_input_option='USER_ENTERED')
-      batch_update_request = asset_title_left(at_revenues, batch_update_request, ws, ag)
-      batch_update_request = bottom_color(at_revenues, batch_update_request, ws, ag)
-      batch_update_request = add_border(at_revenues, batch_update_request, ws, ag)
-      batch_update_request = format_currency(at_revenues, batch_update_request, ws, ag)
+      if len(at_revenues[ag]) > 0:
+        update_request[ag] = []
+        update_request[ag].append({
+          'range': 'A1:B1',
+          'values': [['아트트랙', '']]
+        })
+        update_request[ag].append({
+          'range': f'A3:C{2 + len(at_revenues[ag])}',
+          'values': [[rev['asset_id'], f'{rev["asset_title"]}', float(rev["partner_revenue"])] for rev in at_revenues[ag]]
+        })
+        update_request[ag].append({
+          'range': f'A{3 + len(at_revenues[ag])}:C{4 + len(at_revenues[ag])}',
+          'values': [['', '수익 분배 전 금액', f'=SUM(C3:C{2 + len(at_revenues[ag])})'], ['', '수익 분배 후 금액', f'=SUM(C3:C{2 + len(at_revenues[ag])})*{float(client.at_split)}']],
+        })
+        template = sh.worksheet(sh.worksheets()[1].title)
+        ws = template.duplicate(new_sheet_name=ag, insert_sheet_index=len(sh.worksheets()))
+        ws.batch_update(update_request[ag], value_input_option='USER_ENTERED')
+        batch_update_request = asset_title_left(at_revenues, batch_update_request, ws, ag)
+        batch_update_request = bottom_color(at_revenues, batch_update_request, ws, ag)
+        batch_update_request = add_border(at_revenues, batch_update_request, ws, ag)
+        batch_update_request = format_currency(at_revenues, batch_update_request, ws, ag)
 
   if len(mc_revenues) > 0:
     mc_revenues = pd.DataFrame(mc_revenues).groupby(['asset_id', 'asset_title']).sum().reset_index().sort_values(by='partner_revenue', ascending=False).to_dict('records')
