@@ -8,11 +8,11 @@
     Asset Management Platform for Music CMS
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="https://github.com/collab-asia-co/collab-music-dashboard">View Demo</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    <a href="https://github.com/collab-asia-co/collab-music-dashboard/issues">Report Bug</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+    <a href="https://github.com/collab-asia-co/collab-music-dashboard/issues">Request Feature</a>
   </p>
 
 
@@ -65,7 +65,7 @@ Follow the below instruction for setting up locally.
 
 1. Clone the repo
 ```sh
-git clone https://github.com/your_username_/Project-Name.git
+git clone https://github.com/collab-asia-co/collab-music-dashboard
 ```
 2. Store your service account on directory
 ```

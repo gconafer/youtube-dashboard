@@ -36,7 +36,6 @@ services:
       - DB_PASS=supersecretpassword
       - DEBUG=1
       - REDIS_HOST=redis
-    #      - S3_STORAGE_BACKEND = 0
     links:
       - redis
     depends_on:

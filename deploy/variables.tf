@@ -43,3 +43,7 @@ variable "private_key_id" {
 variable "private_key" {
   description = "Service Account private key"
 }
+
+variable "notebook_pw" {
+  description = "Jupyter Notebook Password"
+}

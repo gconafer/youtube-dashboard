@@ -9,6 +9,15 @@ data "aws_ami" "amazon_linux" {
   "amazon"]
 }
 
+data "template_file" "user_data" {
+  template = file("./templates/bastion/user-data.sh.tpl")
+
+  vars = {
+    notebook_pw = var.notebook_pw
+  }
+}
+
+
 resource "aws_iam_role" "bastion" {
   name               = "${local.prefix}-bastion"
   assume_role_policy = file("./templates/bastion/instance-profile-policy.json")
@@ -29,7 +38,7 @@ resource "aws_iam_instance_profile" "bastion" {
 resource "aws_instance" "bastion" {
   ami                  = data.aws_ami.amazon_linux.id
   instance_type        = "t2.micro"
-  user_data            = file("./templates/bastion/user-data.sh")
+  user_data            = data.template_file.user_data.rendered
   iam_instance_profile = aws_iam_instance_profile.bastion.name
   key_name             = var.bastion_key_name
   subnet_id            = aws_subnet.public_a.id
@@ -53,6 +62,14 @@ resource "aws_security_group" "bastion" {
     from_port = 22
     protocol  = "tcp"
     to_port   = 22
+    cidr_blocks = [
+    "0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 8888
+    protocol  = "tcp"
+    to_port   = 8888
     cidr_blocks = [
     "0.0.0.0/0"]
   }
