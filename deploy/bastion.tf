@@ -9,14 +9,6 @@ data "aws_ami" "amazon_linux" {
   "amazon"]
 }
 
-data "template_file" "user_data" {
-  template = file("./templates/bastion/user-data.sh.tpl")
-
-  vars = {
-    notebook_pw = var.notebook_pw
-  }
-}
-
 
 resource "aws_iam_role" "bastion" {
   name               = "${local.prefix}-bastion"
@@ -38,7 +30,7 @@ resource "aws_iam_instance_profile" "bastion" {
 resource "aws_instance" "bastion" {
   ami                  = data.aws_ami.amazon_linux.id
   instance_type        = "t2.micro"
-  user_data            = data.template_file.user_data.rendered
+  user_data            = file("./templates/bastion/user-data.sh")
   iam_instance_profile = aws_iam_instance_profile.bastion.name
   key_name             = var.bastion_key_name
   subnet_id            = aws_subnet.public_a.id
