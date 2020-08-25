@@ -63,18 +63,28 @@ def payment_history(request, client_id, year_month):
         'split': mc_rev.aggregate(Sum('partner_revenue'))['partner_revenue__sum'] * float(client.mc_split)
       }
     promotion_video = PromotionVideo.objects.filter(included_asset__in=sr_assets).distinct()
+    print(len(promotion_video))
     for vid in promotion_video:
-      split = sr_assets.filter(asset_id__in=vid.included_asset.all()).count() / vid.included_asset.all().count()
-      # print(vid.asset.asset_title, AssetRevenueView.objects.filter(asset_id=vid.asset_id).aggregate(Sum('partner_revenue'))['partner_revenue__sum'])
+      total_count = vid.included_asset.all().count()
+      included_count = vid.included_asset.filter(asset_id__in=sr_assets).count()
+      split = included_count / total_count
       promo_rev_objects = AssetRevenueView.objects.filter(asset_id=vid.asset_id, year_month=year_month)
       if len(promo_rev_objects) > 0:
         promo_total_sum = promo_rev_objects.aggregate(Sum('partner_revenue'))['partner_revenue__sum'] * split
       else:
         promo_total_sum = 0
-      promo_revenues[Asset.objects.get(asset_id=vid.asset_id).asset_title] = {
-        'total': promo_total_sum,
-        'split': promo_total_sum * 0.4
-      }
+
+      if Asset.objects.get(asset_id=vid.asset_id).asset_title in promo_revenues.keys():
+        promo_revenues[Asset.objects.get(asset_id=vid.asset_id).asset_title]['total'] += promo_total_sum
+        promo_revenues[Asset.objects.get(asset_id=vid.asset_id).asset_title]['split'] += promo_total_sum*0.4
+      else:
+        promo_revenues[Asset.objects.get(asset_id=vid.asset_id).asset_title] = {
+          'total': promo_total_sum,
+          'split': promo_total_sum * 0.4
+        }
+      if Asset.objects.get(asset_id=vid.asset_id).asset_title == "가사영상 | 가수 - 제목":
+        print(Asset.objects.get(asset_id=vid.asset_id).asset_title)
+        print(included_count, total_count)
 
   promo_revenues = dict(sorted(promo_revenues.items(), key=lambda x: x[1]['total'], reverse=True))
 
