@@ -34,9 +34,9 @@ urlpatterns = \
     path('test_insert', views.insert_client),
     path('test_country', views.channel_id_country),
     path('export_all/<str:year_month>', views.all_payment_export),
-    path('export_leeway/<str:year_month>/<str:client_id>', views.export_leeway),
-    path('export_ene/<str:year_month>/<str:client_id>', views.export_ene),
-    path('export_kdigital/<str:year_month>/<str:client_id>', views.export_kdigital),
+    path('export_leeway/<str:year_month>/<str:client_id>', views.export_leeway, name='export_leeway'),
+    path('export_ene/<str:year_month>/<str:client_id>', views.export_ene, name='export_ene'),
+    path('export_kdigital/<str:year_month>/<str:client_id>', views.export_kdigital, name='export_kdigital'),
 
     path('dashboard/<str:ym>', views.dashboard, name='dashboard'),
     path('country-dashboard/<str:ym>', views.country_dashboard, name='country_dashboard'),

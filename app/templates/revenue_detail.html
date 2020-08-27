@@ -60,7 +60,8 @@
                   <td id="collapseChannel" class="collapse out"> &nbsp-{{ channel_name }}</td>
                   <td id="collapseChannel" class="collapse out"> ${{ channel_rev.total |stringformat:".2f" }}</td>
                   <td id="collapseChannel" class="collapse out"> ${{ channel_rev.split |stringformat:".2f" }}</td>
-                  <td id="collapseChannel" class="collapse out"> ${{ channel_rev.total |sub:channel_rev.split|stringformat:".2f" }}</td>
+                  <td id="collapseChannel" class="collapse out">
+                    ${{ channel_rev.total |sub:channel_rev.split|stringformat:".2f" }}</td>
                 </tr>
               {% endfor %}
               <tr class="table-warning">
@@ -137,7 +138,20 @@
               </tr>
               </tbody>
             </table>
-            <a href="{% url 'payment_export' year_month=year_month client_id=client.id %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Export CSV</a>
+            {% if client.client_name == 'Kdigital Media' %}
+              <a href="{% url 'export_kdigital' year_month=year_month client_id=client.id %}"
+                 class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Export Custom CSV</a>
+            {% endif %}
+            {% if client.client_name == 'LEEWay' %}
+              <a href="{% url 'export_leeway' year_month=year_month client_id=client.id %}"
+                 class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Export Custom CSV</a>
+            {% endif %}
+            {% if client.client_name == 'ENE Media' %}
+              <a href="{% url 'export_ene' year_month=year_month client_id=client.id %}"
+                 class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Export Custom CSV</a>
+            {% endif %}
+            <a href="{% url 'payment_export' year_month=year_month client_id=client.id %}"
+               class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Export CSV</a>
           </div>
         {% endif %}
       </div>

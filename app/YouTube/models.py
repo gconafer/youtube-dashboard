@@ -188,6 +188,12 @@ class AssetRevenueView(models.Model):
     unique_together = ('year_month', 'asset', 'revenue_type', 'adjusted', 'cms', 'manual_claimed', 'promotion')
 
 
+class PaidFeature(models.Model):
+  year_month = models.CharField(max_length=7)
+  channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
+  amount = models.FloatField(default=0)
+
+
 class ManualClaimWhiteList(models.Model):
   video_id = models.CharField(max_length=50, unique=True)
   client = models.ForeignKey(Client, on_delete=models.CASCADE)

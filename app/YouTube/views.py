@@ -7,9 +7,9 @@ from .views_asset_categorize import *
 from .views_dashboard import *
 from .views_payment_export import *
 from .export_all import *
-from .views_custom_export import *
-from .ene_custom import *
-from .kdigital_export import *
+from .custom_leeway import *
+from .custom_ene import *
+from .custom_kdigital import *
 
 @login_required
 def test_client(request):
