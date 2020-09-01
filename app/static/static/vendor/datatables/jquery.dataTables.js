@@ -13379,7 +13379,7 @@
 
 
         /**
-         * DataTables build type (expanded by the download builder)
+         * DataTables build type (expanded by the step1 builder)
          *
          *  @type string
          */

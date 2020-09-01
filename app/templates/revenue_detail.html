@@ -150,6 +150,10 @@
               <a href="{% url 'export_ene' year_month=year_month client_id=client.id %}"
                  class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Export Custom CSV</a>
             {% endif %}
+            {% if client.client_name == '온리원뮤직' %}
+              <a href="{% url 'export_onlyone' year_month=year_month client_id=client.id %}"
+                 class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Export Custom CSV</a>
+            {% endif %}
             <a href="{% url 'payment_export' year_month=year_month client_id=client.id %}"
                class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Export CSV</a>
           </div>

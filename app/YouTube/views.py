@@ -10,6 +10,7 @@ from .export_all import *
 from .custom_leeway import *
 from .custom_ene import *
 from .custom_kdigital import *
+from .custom_onlyone import *
 
 @login_required
 def test_client(request):
