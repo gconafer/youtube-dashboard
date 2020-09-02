@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.shortcuts import render
 
-from .models import Client, Asset, AssetGroup, AssetRevenueView, PromotionVideo
+from .models import Client, Asset, AssetGroup, AssetRevenueView, PromotionVideo, PaidFeature, Channel
 
 
 @login_required
@@ -13,10 +13,18 @@ def payment_history(request, client_id, year_month):
   ch_groups = asset_groups.filter(asset_type='ch')
   at_groups = asset_groups.filter(asset_type='at')
   sr_groups = asset_groups.filter(asset_type='sr')
-  # print(sr_groups)
+
+  paid_feature = PaidFeature.objects.filter(year_month=year_month, channel__in=Channel.objects.filter(client=client))
+  print([a.amount for a in paid_feature])
 
   mc_revenues = {}
   ch_revenues = {}
+
+  if len(paid_feature) > 0:
+    ch_revenues['Paid Feature'] = {
+      'total': paid_feature.aggregate(Sum('amount'))['amount__sum'],
+      'split': paid_feature.aggregate(Sum('amount'))['amount__sum'] * float(client.channel_split)
+    }
   for ag in ch_groups:
     rev = AssetRevenueView.objects.filter(asset__in=Asset.objects.filter(asset_group=ag), year_month=year_month, manual_claimed=False, promotion=False)
     if len(rev) > 0:
@@ -76,7 +84,7 @@ def payment_history(request, client_id, year_month):
 
       if Asset.objects.get(asset_id=vid.asset_id).asset_title in promo_revenues.keys():
         promo_revenues[Asset.objects.get(asset_id=vid.asset_id).asset_title]['total'] += promo_total_sum
-        promo_revenues[Asset.objects.get(asset_id=vid.asset_id).asset_title]['split'] += promo_total_sum*0.4
+        promo_revenues[Asset.objects.get(asset_id=vid.asset_id).asset_title]['split'] += promo_total_sum * 0.4
       else:
         promo_revenues[Asset.objects.get(asset_id=vid.asset_id).asset_title] = {
           'total': promo_total_sum,
@@ -87,7 +95,6 @@ def payment_history(request, client_id, year_month):
         print(included_count, total_count)
 
   promo_revenues = dict(sorted(promo_revenues.items(), key=lambda x: x[1]['total'], reverse=True))
-
 
   total_revenue = {}
   split_revenue = {}
@@ -125,6 +132,7 @@ def payment_history(request, client_id, year_month):
   for key, value in split_revenue.items():
     split_sum += value
 
+  print(ch_revenues)
   context = {
     'client': client,
     'year_month': year_month,

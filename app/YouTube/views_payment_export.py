@@ -6,7 +6,7 @@ from django.db.models import Sum
 from django.shortcuts import redirect
 from oauth2client.service_account import ServiceAccountCredentials
 
-from .models import Client, Asset, AssetGroup, AssetRevenueView
+from .models import Client, Asset, AssetGroup, AssetRevenueView, PaidFeature, Channel
 
 
 def asset_title_left(revenues, batch_update_request, ws, ag):
@@ -30,26 +30,6 @@ def asset_title_left(revenues, batch_update_request, ws, ag):
         }
       },
       "fields": "userEnteredFormat(numberFormat,horizontalAlignment)"
-    }
-  })
-  return batch_update_request
-
-
-def bottom_merge(revenues, batch_update_request, ws, ag):
-  if ag != "mc":
-    revenue_list = revenues[ag]
-  else:
-    revenue_list = revenues
-  batch_update_request['requests'].append({
-    "mergeCells": {
-      "range": {
-        "sheetId": ws.id,
-        "startRowIndex": 2 + len(revenue_list),
-        "endRowIndex": 4 + len(revenue_list),
-        "startColumnIndex": 1,
-        "endColumnIndex": 2
-      },
-      "mergeType": "MERGE_ROWS"
     }
   })
   return batch_update_request
@@ -171,6 +151,9 @@ def payment_export(request, client_id, year_month):
   ch_revenues = {}
   at_revenues = {}
   sr_revenues = {}
+  paid_feature = PaidFeature.objects.filter(year_month=year_month, channel__in=Channel.objects.filter(client=client))
+  if len(paid_feature) > 0:
+    donation_revenues = paid_feature.aggregate(Sum('amount'))['amount__sum']
 
   # Channel Assets to List
   if len(ch_groups) > 0:
@@ -263,8 +246,23 @@ def payment_export(request, client_id, year_month):
 
   # Create Spread Sheet
   pyg = pygsheets.authorize(service_account_file='service_account.json')
+  folder_name = f'[Payment] {year_month}'
+  search = pyg.drive.list(q=f"mimeType='application/vnd.google-apps.folder' and name='{folder_name}'",
+                             spaces='drive', fields='nextPageToken, files(id, name)')
+  if len(search) == 0:
+      file_metadata = {
+        'name': folder_name,
+        'mimeType': 'application/vnd.google-apps.folder',
+        'parents': ['1ySLfZsTXoG7XW8GIlIZE1iqDajtwv3jq']
+      }
+      kwargs = {}
+      kwargs['supportsTeamDrives'] = True
+      folder_id = pyg.drive.service.files().create(body=file_metadata, fields='id', **kwargs).execute()['id']
+  else:
+      folder_id = search[0]['id']
+
   sample_report_id = '1xGQJEigfpbWgksvvrRTs9cxXTr0CX_H5VR0vY2ZcSIY'
-  folder_id = '1BuwzXG7hJNvGoaH8nFMywGxIgQwwIGT9'
+
   new_ss = pyg.drive.copy_file(file_id=sample_report_id, title=f'{year_month.split("-")[0]}년 {int(year_month.split("-")[1])}월 수익 정산서 [{client}]', folder=folder_id)
   sh = gc.open_by_key(new_ss['id'])
 
@@ -381,6 +379,8 @@ def payment_export(request, client_id, year_month):
   # Summary
   sh.del_worksheet(sh.worksheet(sh.worksheets()[1].title))
   total_sheet = len(sh.worksheets())
+  # if len(paid_feature) > 0:
+  #   total_sheet += 1
   ws = sh.worksheet(sh.worksheets()[0].title)
 
   batch_update_request['requests'].append({
@@ -394,18 +394,38 @@ def payment_export(request, client_id, year_month):
       "inheritFromBefore": True
     }
   })
+
   batch_update_request['requests'].append({
     "mergeCells": {
       "range": {
         "sheetId": ws.id,
         "startRowIndex": 22,
-        "endRowIndex": 22 + total_sheet,
+        "endRowIndex": 21 + total_sheet,
         "startColumnIndex": 3,
         "endColumnIndex": 5
       },
       "mergeType": "MERGE_ROWS"
     }
   })
+
+  batch_update_request['requests'].append({
+    "repeatCell": {
+      "range": {
+        "sheetId": ws.id,
+        "startRowIndex": 22,
+        "endRowIndex": 21 + total_sheet,
+        "startColumnIndex": 1,
+        "endColumnIndex": 3
+      },
+      "cell": {
+        "userEnteredFormat": {
+          "horizontalAlignment": "CENTER",
+        }
+      },
+      "fields": "userEnteredFormat(horizontalAlignment)"
+    }
+  })
+
   batch_update_request['requests'].append({
     "updateBorders": {
       "range": {
@@ -437,17 +457,11 @@ def payment_export(request, client_id, year_month):
   if len(mc_revenues) > 0:
     length.append(len(mc_revenues))
 
-  # item_list = []
-  # for i, ws in enumerate(sh.worksheets()):
-  #   title = ws.title.replace("'", "''")
-  #   item_list.append([i, ws.title, f"='{title}'!C{length[i] + 4}"])
-  # item_list = item_list[1:]
-  # print(item_list)
   item_list = [[i, ws.title, f"""='{ws.title.replace("'", "''")}'!C{length[i] + 4}"""] for i, ws in enumerate(sh.worksheets())][1:]
   sh.batch_update(batch_update_request)
   summary_update = []
   summary_update.append({'range': f'B22:D{22 + total_sheet}', 'values': item_list})
-  summary_update.append({'range': f'E{23 + total_sheet}', 'values': [[f'=SUM(D22:E{22 + total_sheet - 2})']]})
+  summary_update.append({'range': f'E{22 + total_sheet}', 'values': [[f'=SUM(D22:E{20 + total_sheet})']]})
   summary_update.append({'range': f'D17', 'values': [[f'{year_month.split("-")[0]}년 {year_month.split("-")[1]}월 수익 내역']]})
   summary_update.append({'range': f'B13', 'values': [[client.payment_method]]})
   summary_update.append({'range': f'B8', 'values': [[client.client_name]]})

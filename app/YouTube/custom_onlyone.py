@@ -410,7 +410,19 @@ def export_onlyone(request, year_month, client_id):
   # Create Spread Sheet
   pyg = pygsheets.authorize(service_account_file='service_account.json')
   sample_report_id = '1iLYNYyKqLVTyDVtOE7mPyHeeJ3bGss35_rYoD9XC7Y4'
-  folder_id = '1O77oSrrsuafDyjVrRESsn57XTwAVEKtv'
+  search = pyg.drive.list(q=f"mimeType='application/vnd.google-apps.folder' and name='{year_month}'",
+                             spaces='drive', fields='nextPageToken, files(id, name)')
+  if len(search) == 0:
+      file_metadata = {
+        'name': year_month,
+        'mimeType': 'application/vnd.google-apps.folder',
+        'parents': ['1ySLfZsTXoG7XW8GIlIZE1iqDajtwv3jq']
+      }
+      kwargs = {}
+      kwargs['supportsTeamDrives'] = True
+      folder_id = client.drive.service.files().create(body=file_metadata, fields='id', **kwargs).execute()['id']
+  else:
+      folder_id = search[0]['id']
 
   new_ss = pyg.drive.copy_file(file_id=sample_report_id, title=f'{year_month.split("-")[0]}년 {int(year_month.split("-")[1])}월 수익 정산서 [{client}]', folder=folder_id)
   sh = gc.open_by_key(new_ss['id'])
