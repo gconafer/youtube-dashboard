@@ -28,8 +28,13 @@ resource "aws_iam_role" "bastion" {
   tags = local.common_tags
 }
 
-resource "aws_iam_role_policy_attachment" "bastion_attach_policy" {
+resource "aws_iam_role_policy_attachment" "bastion_attach_policy1" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.bastion.name
+}
+
+resource "aws_iam_role_policy_attachment" "bastion_attach_policy2" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
   role       = aws_iam_role.bastion.name
 }
 
