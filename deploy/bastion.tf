@@ -29,13 +29,12 @@ resource "aws_iam_role" "bastion" {
 }
 
 resource "aws_iam_role_policy_attachment" "bastion_attach_policy1" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  for_each = toset([
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+  ])
   role       = aws_iam_role.bastion.name
-}
-
-resource "aws_iam_role_policy_attachment" "bastion_attach_policy2" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
-  role       = aws_iam_role.bastion.name
+  policy_arn = each.value
 }
 
 resource "aws_iam_instance_profile" "bastion" {
