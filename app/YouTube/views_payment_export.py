@@ -379,21 +379,22 @@ def payment_export(request, client_id, year_month):
   # Summary
   sh.del_worksheet(sh.worksheet(sh.worksheets()[1].title))
   total_sheet = len(sh.worksheets())
-  # if len(paid_feature) > 0:
-  #   total_sheet += 1
+  if len(paid_feature) > 0:
+    total_sheet += 1
   ws = sh.worksheet(sh.worksheets()[0].title)
 
-  batch_update_request['requests'].append({
-    "insertDimension": {
-      "range": {
-        "sheetId": ws.id,
-        "dimension": "ROWS",
-        "startIndex": 22,
-        "endIndex": 22 + total_sheet - 3
-      },
-      "inheritFromBefore": True
-    }
-  })
+  if total_sheet > 2:
+    batch_update_request['requests'].append({
+      "insertDimension": {
+        "range": {
+          "sheetId": ws.id,
+          "dimension": "ROWS",
+          "startIndex": 22,
+          "endIndex": 22 + total_sheet - 3
+        },
+        "inheritFromBefore": True
+      }
+    })
 
   batch_update_request['requests'].append({
     "mergeCells": {
@@ -458,9 +459,30 @@ def payment_export(request, client_id, year_month):
     length.append(len(mc_revenues))
 
   item_list = [[i, ws.title, f"""='{ws.title.replace("'", "''")}'!C{length[i] + 4}"""] for i, ws in enumerate(sh.worksheets())][1:]
-  sh.batch_update(batch_update_request)
   summary_update = []
   summary_update.append({'range': f'B22:D{22 + total_sheet}', 'values': item_list})
+  if len(paid_feature) > 0:
+    item_list_2 = [[len(item_list)+1, '후원금', donation_revenues]]
+    summary_update.append({'range': f'B{20 + total_sheet}:D{20 + total_sheet}', 'values': item_list_2})
+    batch_update_request['requests'].append({
+      "repeatCell": {
+        "range": {
+          "sheetId": ws.id,
+          "startRowIndex": 19 + total_sheet,
+          "endRowIndex": 20 + total_sheet,
+          "startColumnIndex": 3,
+          "endColumnIndex": 5
+        },
+        "cell": {
+          "userEnteredFormat": {
+            "numberFormat": {"type": "CURRENCY"},
+            "horizontalAlignment": "RIGHT",
+          }
+        },
+        "fields": "userEnteredFormat(numberFormat,horizontalAlignment)"
+      }
+    })
+  sh.batch_update(batch_update_request)
   summary_update.append({'range': f'E{22 + total_sheet}', 'values': [[f'=SUM(D22:E{20 + total_sheet})']]})
   summary_update.append({'range': f'D17', 'values': [[f'{year_month.split("-")[0]}년 {year_month.split("-")[1]}월 수익 내역']]})
   summary_update.append({'range': f'B13', 'values': [[client.payment_method]]})

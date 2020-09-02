@@ -311,17 +311,18 @@ def export_ene(request, year_month, client_id):
 
   # Create Spread Sheet
   pyg = pygsheets.authorize(service_account_file='service_account.json')
-  search = pyg.drive.list(q=f"mimeType='application/vnd.google-apps.folder' and name='{year_month}'",
+  folder_name = f'[Payment] {year_month}'
+  search = pyg.drive.list(q=f"mimeType='application/vnd.google-apps.folder' and name='{folder_name}'",
                              spaces='drive', fields='nextPageToken, files(id, name)')
   if len(search) == 0:
       file_metadata = {
-        'name': year_month,
+        'name': folder_name,
         'mimeType': 'application/vnd.google-apps.folder',
         'parents': ['1ySLfZsTXoG7XW8GIlIZE1iqDajtwv3jq']
       }
       kwargs = {}
       kwargs['supportsTeamDrives'] = True
-      folder_id = client.drive.service.files().create(body=file_metadata, fields='id', **kwargs).execute()['id']
+      folder_id = pyg.drive.service.files().create(body=file_metadata, fields='id', **kwargs).execute()['id']
   else:
       folder_id = search[0]['id']
 

@@ -23,7 +23,7 @@ def payment_history(request, client_id, year_month):
   if len(paid_feature) > 0:
     ch_revenues['Paid Feature'] = {
       'total': paid_feature.aggregate(Sum('amount'))['amount__sum'],
-      'split': paid_feature.aggregate(Sum('amount'))['amount__sum'] * float(client.channel_split)
+      'split': paid_feature.aggregate(Sum('amount'))['amount__sum']# * float(client.channel_split)
     }
   for ag in ch_groups:
     rev = AssetRevenueView.objects.filter(asset__in=Asset.objects.filter(asset_group=ag), year_month=year_month, manual_claimed=False, promotion=False)
