@@ -74,18 +74,13 @@
             </tr>
             </thead>
             <tbody>
-            {#            <tr>#}
-            <tr style="cursor:pointer;"
-                onClick=" location.href='{% url 'payment_history' client_id=client.id year_month='2020-07' %}'">
-              <td class="success">2020-07</td>
-              <td class="success">$7,777.77</td>
-            </tr>
-            <tr style="cursor:pointer;"
-                onClick=" location.href='{% url 'payment_history' client_id=client.id year_month='2020-06' %}'">
-              <td class="success">2020-06</td>
-              <td class="success">$3,333.33</td>
-            </tr>
-            {#							{% endfor %}#}
+            {% for ym in year_month %}
+              <tr style="cursor:pointer;"
+                  onClick=" location.href='{% url 'payment_history' client_id=client.id year_month=ym %}'">
+                <td class="success">{{ ym }}</td>
+                <td class="success">$7,777.77</td>
+              </tr>
+            {% endfor %}
             </tbody>
           </table>
 

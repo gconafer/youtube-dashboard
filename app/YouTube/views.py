@@ -25,6 +25,7 @@ def test_client(request):
 
 @login_required
 def client_info(request, client_id):
+  year_month = AssetRevenueView.objects.order_by().values('year_month').distinct().values_list('year_month', flat=True)
   a = Client.objects.get(id=client_id)
   managers = a.manager.all()
   asset_groups = a.assetgroup_set.all()
@@ -33,7 +34,8 @@ def client_info(request, client_id):
     'client': a,
     'managers': managers,
     'asset_groups': asset_groups,
-    'channels': channels
+    'channels': channels,
+    'year_month': year_month
   }
   return render(request, "client_info.html", context)
 

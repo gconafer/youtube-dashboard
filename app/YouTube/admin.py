@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 
-from YouTube.models import Account, Client, Manager, Asset, Channel, AssetGroup, AssetRevenueView, ManualClaimWhiteList, PromotionVideo
+from YouTube.models import Account, Client, Manager, Asset, Channel, AssetGroup, AssetRevenueView, ManualClaimWhiteList, PromotionVideo, PaidFeature
 
 
 class AssetRevenueViewAdmin(admin.ModelAdmin):
@@ -17,6 +17,7 @@ admin.site.register(Channel)
 admin.site.register(AssetGroup)
 admin.site.register(ManualClaimWhiteList)
 admin.site.register(PromotionVideo)
+admin.site.register(PaidFeature)
 admin.site.register(AssetRevenueView, AssetRevenueViewAdmin)
 #
 admin.site.unregister(Group)

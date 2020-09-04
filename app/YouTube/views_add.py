@@ -84,6 +84,6 @@ def add_asset(request):
     form = AddAssetForm(request.POST)
     if form.is_valid():
       form.save()
-      return redirect('asset')
+      return redirect('asset', mode='office', asset_group_id='all')
   context = {'form': form}
   return render(request, 'form/add_asset.html', context)
