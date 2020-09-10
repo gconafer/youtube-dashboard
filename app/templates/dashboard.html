@@ -14,24 +14,20 @@
           <label for="exampleFormControlSelect1">Year Month</label>
           <select class="form-control" id="exampleFormControlSelect1" onchange="javascript:location.href = this.value;">
             {% if dashboard_type == 'admin' %}
-              <option value="{% url 'dashboard' ym='2020-07' %}"
-                      {% if request.resolver_match.url_name == "dashboard" and request.resolver_match.kwargs.ym == "2020-07" %}selected{% endif %}>
-                2020-07
+              {% for y_m in year_month %}
+              <option value="{% url 'dashboard' ym=y_m %}"
+                      {% if request.resolver_match.url_name == "dashboard" and request.resolver_match.kwargs.ym == y_m %}selected{% endif %}>
+                {{ y_m }}
               </option>
-              <option value="{% url 'dashboard' ym='2020-06' %}"
-                      {% if request.resolver_match.url_name == "dashboard" and request.resolver_match.kwargs.ym == "2020-06" %}selected{% endif %}>
-                2020-06
-              </option>
+              {% endfor %}
             {% endif %}
             {% if dashboard_type == 'staff' %}
-              <option value="{% url 'country_dashboard' ym='2020-07' %}"
-                      {% if request.resolver_match.url_name == "country_dashboard" and request.resolver_match.kwargs.ym == "2020-07" %}selected{% endif %}>
-                2020-07
+              {% for y_m in year_month %}
+              <option value="{% url 'country_dashboard' ym=y_m %}"
+                      {% if request.resolver_match.url_name == "country_dashboard" and request.resolver_match.kwargs.ym == y_m %}selected{% endif %}>
+                {{ y_m }}
               </option>
-              <option value="{% url 'country_dashboard' ym='2020-06' %}"
-                      {% if request.resolver_match.url_name == "country_dashboard" and request.resolver_match.kwargs.ym == "2020-06" %}selected{% endif %}>
-                2020-06
-              </option>
+              {% endfor %}
             {% endif %}
           </select>
         </div>

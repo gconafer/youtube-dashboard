@@ -118,7 +118,8 @@ def dashboard(request, ym):
     'month_profit': sum(profit_values),
     'music_month_reveue': music_month_reveue,
     'non_music_month_reveue': non_music_month_reveue,
-    'dashboard_type': 'admin'
+    'dashboard_type': 'admin',
+    'year_month': year_month
   }
   return render(request, "dashboard.html", context)
 
@@ -236,6 +237,7 @@ def country_dashboard(request, ym):
     'month_profit': sum(profit_values),
     'music_month_reveue': music_month_reveue,
     'non_music_month_reveue': non_music_month_reveue,
-    'dashboard_type': 'staff'
+    'dashboard_type': 'staff',
+    'year_month': year_month
   }
   return render(request, "dashboard.html", context)
