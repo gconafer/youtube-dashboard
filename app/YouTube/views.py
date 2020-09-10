@@ -13,7 +13,7 @@ from .custom_kdigital import *
 from .custom_onlyone import *
 
 @login_required
-def test_client(request):
+def update_kchannel(request):
   kor = Client.objects.filter(office='KR')
   for k_client in kor:
     k_channels = Channel.objects.filter(client=k_client)

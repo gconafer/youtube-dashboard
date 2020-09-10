@@ -30,7 +30,7 @@ urlpatterns = \
     path("select2/", include("django_select2.urls")),
 
     path('', TemplateView.as_view(template_name='index.html'), name='home'),
-    path('test', views.test_client),
+    path('update-kchannel', views.update_kchannel, name='update_kchannel'),
     path('test_insert', views.insert_client),
     path('test_country', views.channel_id_country),
     path('export_all/<str:year_month>', views.all_payment_export),
