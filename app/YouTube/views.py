@@ -19,7 +19,8 @@ def update_kchannel(request):
     k_channels = Channel.objects.filter(client=k_client)
     for k_channel in k_channels:
       ag_name = (k_client.client_name + ' - ' + k_channel.channel_name)
-      Asset.objects.filter(asset_channel_id=k_channel.channel_id).update(asset_group_id=AssetGroup.objects.get(group_name=ag_name).id, office='KR')
+      asset_group = AssetGroup.objects.filter(group_name=ag_name).first()
+      Asset.objects.filter(asset_channel_id=k_channel.channel_id).update(asset_group_id=asset_group, office='KR')
   return render(request, 'index.html')
 
 
