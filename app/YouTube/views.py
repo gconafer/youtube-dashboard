@@ -20,7 +20,7 @@ def update_kchannel(request):
     for k_channel in k_channels:
       ag_name = (k_client.client_name + ' - ' + k_channel.channel_name)
       Asset.objects.filter(asset_channel_id=k_channel.channel_id).update(asset_group_id=AssetGroup.objects.get(group_name=ag_name).id, office='KR')
-  return redirect('home')
+  return render(request, 'index.html')
 
 
 @login_required
