@@ -325,21 +325,23 @@ def export_kdigital(request, year_month, client_id):
     select asset_id,
            isrc,
            artist,
+           label,
            case when upc is null then grid else upc end as album_code,
            album,
            asset_title,
+           owned_views,
            partner_revenue
-    from (select asset_id, coalesce(partner_revenue, 0) + coalesce(promotion_partner_revenue, 0) as partner_revenue
+    from (select asset_id, coalesce(owned_views, 0) + coalesce(promotion_owned_views, 0) as owned_views, coalesce(partner_revenue, 0) + coalesce(promotion_partner_revenue, 0) as partner_revenue
           from (select asset_id, sum(owned_views) as owned_views, sum(partner_revenue) as partner_revenue
                 from "YouTube_assetrevenueview"
                 where asset_id in (select asset_id from "YouTube_asset" where asset_group_id = {sr_group.id})
                   and year_month = '{year_month}'
                   and manual_claimed = FALSE
                 group by asset_id) O
-                   full outer join (select asset_id, sum(split_partner_revenue) as promotion_partner_revenue
+                   full outer join (select asset_id, sum(split_owned_views) as promotion_owned_views, sum(split_partner_revenue) as promotion_partner_revenue
                                     from (
                                              select included_asset_id                 as asset_id,
-                                                    split_onwed_views,
+                                                    split_owned_views,
                                                     split_partner_revenue * 0.4 / {float(client.sr_split)} as split_partner_revenue
                                              from (select YTp.asset_id     as promotion_asset_id,
                                                           include.asset_id as included_asset_id
@@ -349,7 +351,7 @@ def export_kdigital(request, year_month, client_id):
                                                    where include.asset_id in
                                                          (select asset_id from "YouTube_asset" where asset_group_id = {sr_group.id})) J
                                                       left join (select asset_id,
-                                                                        cast(owned_views / total as int) as split_onwed_views,
+                                                                        cast(owned_views / total as int) as split_owned_views,
                                                                         partner_revenue / total          as split_partner_revenue
                                                                  from (select asset_id,
                                                                               sum(owned_views)     as owned_views,

@@ -234,8 +234,9 @@ def payment_export(request, client_id, year_month):
           tmp = {'asset_id': promo_rev[0], 'asset_title': title, 'partner_revenue': promo_rev[2]}
           sr_revenues[ag.group_name].append(tmp)
 
-      sr_revenues[ag.group_name] = pd.DataFrame(sr_revenues[ag.group_name]).groupby(['asset_id', 'asset_title']).sum().reset_index().sort_values(by='partner_revenue', ascending=False).to_dict(
-        'records')
+      if len(rev) > 0:
+        sr_revenues[ag.group_name] = pd.DataFrame(sr_revenues[ag.group_name]).groupby(['asset_id', 'asset_title']).sum().reset_index().sort_values(by='partner_revenue', ascending=False).to_dict(
+          'records')
       if len(mc_rev) > 0:
         rev_by_id = mc_rev.values('asset_id').annotate(total=Sum('partner_revenue')).order_by('-total')
         for r in rev_by_id:
